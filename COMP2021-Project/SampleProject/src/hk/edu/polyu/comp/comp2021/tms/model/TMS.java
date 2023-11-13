@@ -1,17 +1,16 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 import java.util.*;
 
-
-public class TMS {
+public class Task {
     String name;
     String description;
     double duration;
     List<String> prerequisites;
 
-    public TMS(){
+    public Task(){
 
     }
-    public void Task(String name, String description, double duration, List<String> prerequisites) {
+    public Task (String name, String description, double duration, List<String> prerequisites) {
         this.name = name;
         this.description = description;
         this.duration = duration;
@@ -48,7 +47,5 @@ public class TMS {
             System.out.println("Task with the same name already exists: " + name);
         }
     }
-
-
 
 }
