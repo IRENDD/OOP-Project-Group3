@@ -2,6 +2,8 @@ package hk.edu.polyu.comp.comp2021.tms.utilities;
 
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Criterion {
@@ -13,8 +15,9 @@ public abstract class Criterion {
     private String op;
     private double val;
     private String valStr;
-    private String[] valList;
-    private String logicOp;
+    private List<String> valList;
+    private Criterion criterion;
+    private Criterion criterion2;
 
     public Criterion(){
 
@@ -35,16 +38,21 @@ public abstract class Criterion {
         this.name = name;
         this.property = property;
         this.op = op;
-        this.valList = val;
+        this.valList = Arrays.asList(val);
     }
     public Criterion(String name, String name2){
         this.name = name;
         this.name2 = name2;
     }
-//    public Criterion(String name, String name2, String logicOp, String name3){
+    public Criterion(Criterion criterion, Criterion criterion2, String op){
+        this.criterion = criterion;
+        this.criterion2 = criterion2;
+        this.op = op;
+    }
+//    public Criterion(String name, String name2, String op, String name3){
 //        this.name = name;
 //        this.name2 = name2;
-//        this.logicOp = logicOp;
+//        this.op = op;
 //        this.name3 = name3;
 //    }
 
@@ -63,8 +71,8 @@ public abstract class Criterion {
     public String getValStr() { return valStr; }
     public void setValStr(String valStr) { this.valStr = valStr; }
 
-    public String[] getValList() { return valList; }
-    public void setValList(String[] valList) { this.valList = valList; }
+    public List<String> getValList() { return valList; }
+    public void setValList(List<String> valList) { this.valList = valList; }
 
     public String getName2() { return name2; }
     public void setName2(String name2) { this.name2 = name2; }
@@ -72,9 +80,11 @@ public abstract class Criterion {
     public String getName3() { return name3; }
     public void setName3(String name3) { this.name3 = name3; }
 
-    public String getLogicOp() { return logicOp; }
+    public Criterion getCriterion() { return criterion; }
+    public void setCriterion(Criterion criterion) { this.criterion = criterion; }
 
-    public void setLogicOp(String logicOp) { this.logicOp = logicOp; }
+    public Criterion getCriterion2() { return criterion2; }
+    public void setCriterion2(Criterion criterion2) { this.criterion2 = criterion2; }
 
     public static boolean isName(String name){
         if(name.length() > 8 || (name.charAt(0) >= '0' && name.charAt(0) <= '9') || !name.matches("[a-zA-Z0-9]+")){
@@ -90,6 +100,30 @@ public abstract class Criterion {
         }
         return true;
     }
+    protected boolean containsCriterion(Criterion criterion, TMS task) {
+        return criterion.getValStr().equals(task.getName())
+                || criterion.getValStr().equals(task.getDescription())
+                || criterion.getValList().equals(task.getPrerequisites());
+    }
 
-    public abstract void create(String instruction, Map<String, Criterion> criterionMap);
+    protected boolean checkDurationCriterion(Criterion criterion, TMS task) {
+        switch (criterion.getOp()) {
+            case ">":
+                return task.getDuration() > criterion.getVal();
+            case "<":
+                return task.getDuration() < criterion.getVal();
+            case ">=":
+                return task.getDuration() >= criterion.getVal();
+            case "<=":
+                return task.getDuration() <= criterion.getVal();
+            case "==":
+                return task.getDuration() == criterion.getVal();
+            case "!=":
+                return task.getDuration() != criterion.getVal();
+            default:
+                return false;
+        }
+    }
+    public abstract void create(String instruction, Map <String, Criterion> criterionMap);
+    public abstract void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap);
 }

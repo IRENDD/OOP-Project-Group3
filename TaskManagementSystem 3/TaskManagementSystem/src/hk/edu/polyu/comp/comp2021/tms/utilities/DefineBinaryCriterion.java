@@ -3,17 +3,17 @@ package hk.edu.polyu.comp.comp2021.tms.utilities;
 import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
-public class DefineBinaryCriterion extends Criterion implements Serializable {
-//    Map<String, Criterion> criterionMap = Application.criterionMap;
-//    Map<String, TMS> taskMap = Application.taskMap;
-
+public class DefineBinaryCriterion extends Criterion{
     public DefineBinaryCriterion(){ super(); }
     public DefineBinaryCriterion(String name, String name2, String logicOp, String name3){ super(name, name2, logicOp, name3); }
 
-    public void create(String instruction, Map<String, Criterion> criterionMap){
+    public DefineBinaryCriterion(Criterion criterion, Criterion criterion2, String op){ super(criterion, criterion2, op); }
+
+    @Override
+    public void create(String instruction, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
         String name = tokens[1], name2 = tokens[2], logicOp = tokens[3], name3 = tokens[4];
         if (tokens.length != 5) {
@@ -21,26 +21,92 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
             return;
         }
         if (criterionMap.containsKey(name)){
-            System.out.println("Criteria with the same name already exists: " + name);
+            System.out.println("Task with the same name already exists: " + name);
             return;
         }
         if(!isName(name)){
             System.out.println("Invalid DefineBinaryCriterion name format.");
             return;
         }
+        if(!logicOp.equals("&&") && !logicOp.equals("||")){
+            System.out.println("Invalid DefineBinaryCriterion logical operator format.");
+            return;
+        }
         if (!criterionMap.containsKey(name2)) {
-            System.out.println("Key" + name2 + "not found in criterionMap");
+            System.out.println("Key " + name2 + " not found in criterionMap");
             return;
         }
         if (!criterionMap.containsKey(name3)) {
-            System.out.println("Key" + name3 + "not found in criterionMap");
+            System.out.println("Key " + name3 + " not found in criterionMap");
             return;
         }
 
         Criterion criterion = criterionMap.get(name2);
         Criterion criterion2 = criterionMap.get(name3);
+
+        DefineBinaryCriterion binaryCriterion = new DefineBinaryCriterion(criterion, criterion2, logicOp);
+        criterionMap.put(name, binaryCriterion);
+        System.out.println("Binary criteria of " + name2 + " and " + name3 + " created: " + name);
     }
-    public void search(String instruction, Map<String, Criterion> criterionMap, Map <String, TMS>taskMap){
-        // define search function
+
+    @Override
+    public void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap) {
+        String[] tokens = instruction.split(" ");
+        if (tokens.length != 2) {
+            System.out.println("Invalid search command format.");
+            return;
+        }
+
+        String name = tokens[1];
+        if (!criterionMap.containsKey(name)) {
+            System.out.println("Criterion with the given name does not exist: " + name);
+            return;
+        }
+
+        Criterion criterion = criterionMap.get(name);
+        Criterion criterion1 = criterion.getCriterion();
+        Criterion criterion2 = criterion.getCriterion2();
+
+        String logicOp = criterion.getOp();
+        String op1 = criterion1.getOp(), op2 = criterion2.getOp();
+        String property1 = criterion1.getProperty(), property2 = criterion2.getProperty();
+
+        ArrayList<TMS> matching = new ArrayList<>();
+
+        for (Map.Entry<String, TMS> entry : taskMap.entrySet()) {
+            TMS task = entry.getValue();
+            boolean criteriaMet1 = false, criteriaMet2 = false;
+
+            if(op1.equals("contains") && containsCriterion(criterion1, task)){
+                criteriaMet1 = true;
+            } else if(op1.equals("notContains") && containsCriterion(criterion1, task)){
+                criteriaMet1 = true;
+            } else if(property1.equals("duration") && checkDurationCriterion(criterion1, task)){
+                criteriaMet1 = true;
+            }
+
+            if(op2.equals("contains") && containsCriterion(criterion2, task)){
+                criteriaMet2 = true;
+            } else if(op2.equals("notContains") && containsCriterion(criterion2, task)){
+                criteriaMet2 = true;
+            } else if(property2.equals("duration") && checkDurationCriterion(criterion2, task)){
+                criteriaMet2 = true;
+            }
+
+            if(logicOp.equals("&&") && (criteriaMet1 && criteriaMet2)){
+                matching.add(task);
+            } else if(logicOp.equals("||") && (criteriaMet1 || criteriaMet2)){
+                matching.add(task);
+            }
+        }
+        if(matching.isEmpty()){
+            System.out.println("No tasks match the given criterion.");
+            return;
+        } else{
+            System.out.println("Tasks matching the given criterion:");
+            for(TMS task : matching){
+                System.out.println(task.toString());
+            }
+        }
     }
 }

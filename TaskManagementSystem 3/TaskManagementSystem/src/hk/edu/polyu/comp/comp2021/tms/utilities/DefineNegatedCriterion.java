@@ -3,14 +3,15 @@ package hk.edu.polyu.comp.comp2021.tms.utilities;
 import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
-import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Map;
 
-public class DefineNegatedCriterion extends Criterion implements Serializable {
+public class DefineNegatedCriterion extends Criterion{
     public DefineNegatedCriterion(){ super(); }
     public DefineNegatedCriterion(String name, String name2){ super(name, name2); }
-    public void create(String instruction, Map<String, Criterion> criterionMap){
+
+    @Override
+    public void create(String instruction, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
         String name = tokens[1], name2 = tokens[2];
         if (tokens.length != 3) {
@@ -38,9 +39,9 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
             case "name":
             case "description":
                 if(op == "contains"){
-                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "notContains", '"' + criterion.getValStr() + '"');
+                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "notContains", criterion.getValStr().substring(1,criterion.getValStr().length()-2));
                 } else{
-                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "contains", '"' + criterion.getValStr() + '"');
+                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "contains", criterion.getValStr().substring(1,criterion.getValStr().length()-2));
                 }
                 break;
             case "duration":
@@ -66,19 +67,56 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
                 }
             default:
                 if(op == "contains"){
-                    negCriterion = new DefineBasicCriterion(name, property, "notContains", criterion.getValList());
+                    negCriterion = new DefineBasicCriterion(name, property, "notContains", String.valueOf(criterion.getValList()));
                 } else{
-                    negCriterion = new DefineBasicCriterion(name, property, "contains", criterion.getValList());
+                    negCriterion = new DefineBasicCriterion(name, property, "contains", String.valueOf(criterion.getValList()));
                 }
                 break;
         }
         criterionMap.put(name, negCriterion);
-        System.out.println("Negative criteria of" + name2 + "created: " + name);
+        System.out.println("Negative criteria of " + name2 + " created: " + name);
     }
 
+    @Override
+    public void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap){
+        String[] tokens = instruction.split(" ");
+        if (tokens.length != 2) {
+            System.out.println("Invalid search command format.");
+            return;
+        }
+
+        String name = tokens[1];
+        if (!criterionMap.containsKey(name)) {
+            System.out.println("Criterion with the given name does not exist: " + name);
+            return;
+        }
+
+        Criterion criterion = criterionMap.get(name);
+        String property = criterion.getProperty();
+        String op = criterion.getOp();
+
+        ArrayList<TMS> matching = new ArrayList<>();
+        for(Map.Entry<String, TMS> entry : taskMap.entrySet()) {
+            TMS task = entry.getValue();
+            if(op.equals("contains") && containsCriterion(criterion, task)){
+                matching.add(task);
+            } else if(op.equals("notContains") && !containsCriterion(criterion, task)){
+                matching.add(task);
+            } else if(property.equals("duration") && checkDurationCriterion(criterion, task)){
+                matching.add(task);
+            }
+        }
+        if(matching.isEmpty()){
+            System.out.println("No tasks match the given criterion.");
+            return;
+        } else{
+            System.out.println("Tasks matching the given criterion:");
+            for(TMS task : matching){
+                System.out.println(task.toString());
+            }
+        }
+    }
     public void printNegatedCriterion(String name, Map<String,Criterion>criterionMap){
-        //String[] tokens = instruction.split(" ");
-        //String name = tokens[1];
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);
             System.out.println("Task Name: " + criterion.getName());
@@ -87,10 +125,11 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
             if(criterion.getValStr() != null){
                 System.out.println("Value: " + criterion.getValStr());
             } else if(criterion.getValList() != null){
-                System.out.println("Value: " + Arrays.toString(criterion.getValList()));
+                System.out.println("Value: " + criterion.getValList());
             } else{
                 System.out.println("Value: " + criterion.getVal());
             }
         }
     }
 }
+

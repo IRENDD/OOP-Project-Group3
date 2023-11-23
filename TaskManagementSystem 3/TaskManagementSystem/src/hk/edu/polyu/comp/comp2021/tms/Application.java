@@ -107,6 +107,10 @@ public class Application {
                 }
             } else if (input.startsWith("Search")) {
                 // call respective function - Ilyas
+                criteriaBa.search(input, taskMap, criterionMap);
+                //criteriaNe.search(input, taskMap, criterionMap);
+                //criteriaBi.search(input, taskMap, criterionMap);
+
             } else if (input.startsWith("Store")) {
                 UserControl.saveMap (input,taskMap, criterionMap);
 

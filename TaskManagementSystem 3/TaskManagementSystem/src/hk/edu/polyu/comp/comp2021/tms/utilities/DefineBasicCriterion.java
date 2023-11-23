@@ -2,14 +2,11 @@ package hk.edu.polyu.comp.comp2021.tms.utilities;
 import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-public class DefineBasicCriterion extends Criterion implements Serializable {
-//    Map<String, Criterion> criterionMap = Application.criterionMap;
-//    Map<String, TMS> taskMap = Application.taskMap;
-
+public class DefineBasicCriterion extends Criterion {
     public DefineBasicCriterion(){
         super();
     }
@@ -21,7 +18,8 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
     }
     public DefineBasicCriterion(String name, String property, String op, String[] val) { super(name, property, op, val); }
 
-    public void create(String instruction, Map<String, Criterion> criterionMap){
+    @Override
+    public void create(String instruction, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
         String name = tokens[1], property = tokens[2];
         if (tokens.length != 5) {
@@ -33,7 +31,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
             return;
         }
         if(!isName(name)){
-            System.out.println("Invalid DefineBasicCriterion name format.");
+            System.out.println("Invalid CreateSimpleTask name format.");
             return;
         }
 
@@ -42,7 +40,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
         switch (property) {
             case "name":
             case "description":
-                criteria = new DefineBasicCriterion(name, property, "contains", '"' + val + '"');
+                criteria = new DefineBasicCriterion(name, property, "contains", val.substring(1,val.length()-2));
                 break;
             case "duration":
                 try {
@@ -56,22 +54,59 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
                     System.out.println("Invalid duration value: " + val);
                     return;
                 }
-            case "prerequisite":
+            case "prerequisites":
                 String[] valList = tokens[2].split(",");
                 criteria = new DefineBasicCriterion(name, property, "contains", valList);
                 break;
             default:
-                System.out.println ("Invalid DefineBasicCriterion property format");
+                System.out.println("Invalid DefineBasicCriterion property format");
                 return;
         }
         criterionMap.put(name, criteria);
         System.out.println("Criteria created: " + name);
+    }
 
+    @Override
+    public void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap){
+        String[] tokens = instruction.split(" ");
+        if (tokens.length != 2) {
+            System.out.println("Invalid search command format.");
+            return;
+        }
+
+        String name = tokens[1];
+        if (!criterionMap.containsKey(name)) {
+            System.out.println("Criterion with the given name does not exist: " + name);
+            return;
+        }
+
+        Criterion criterion = criterionMap.get(name);
+        String property = criterion.getProperty();
+        String op = criterion.getOp();
+
+        ArrayList<TMS> matching = new ArrayList<>();
+        for(Map.Entry<String, TMS> entry : taskMap.entrySet()) {
+            TMS task = entry.getValue();
+            if(op.equals("contains") && containsCriterion(criterion, task)){
+                matching.add(task);
+            } else if(op.equals("notContains") && !containsCriterion(criterion, task)){
+                matching.add(task);
+            } else if(property.equals("duration") && checkDurationCriterion(criterion, task)){
+                matching.add(task);
+            }
+        }
+        if(matching.isEmpty()){
+            System.out.println("No tasks match the given criterion.");
+            return;
+        } else{
+            System.out.println("Tasks matching the given criterion:");
+            for(TMS task : matching){
+                System.out.println(task.toString());
+            }
+        }
     }
 
     public void printBasicCriterion(String name, Map<String,Criterion>criterionMap){
-        //String[] tokens = instruction.split(" ");
-        //String name = tokens[1];
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);
             System.out.println("Task Name: " + criterion.getName());
@@ -80,11 +115,10 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
             if(criterion.getValStr() != null){
                 System.out.println("Value: " + criterion.getValStr());
             } else if(criterion.getValList() != null){
-                System.out.println("Value: " + Arrays.toString(criterion.getValList()));
+                System.out.println("Value: " + criterion.getValList());
             } else{
                 System.out.println("Value: " + criterion.getVal());
             }
         }
     }
-
 }
