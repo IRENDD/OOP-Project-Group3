@@ -4,15 +4,12 @@ import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 
 public class DefineNegatedCriterion extends Criterion implements Serializable {
-//    Map<String, Criterion> criterionMap = Application.criterionMap;
-//    Map<String, TMS> taskMap = Application.taskMap;
-
     public DefineNegatedCriterion(){ super(); }
     public DefineNegatedCriterion(String name, String name2){ super(name, name2); }
-
     public void create(String instruction, Map<String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
         String name = tokens[1], name2 = tokens[2];
@@ -78,7 +75,22 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
         criterionMap.put(name, negCriterion);
         System.out.println("Negative criteria of" + name2 + "created: " + name);
     }
-    public void search(String instruction, Map<String, Criterion> criterionMap, Map <String, TMS>taskMap){
-        // define the search function
+
+    public void printNegatedCriterion(String name, Map<String,Criterion>criterionMap){
+        //String[] tokens = instruction.split(" ");
+        //String name = tokens[1];
+        if(criterionMap.containsKey(name)){
+            Criterion criterion = (Criterion) criterionMap.get(name);
+            System.out.println("Task Name: " + criterion.getName());
+            System.out.println("Property: " + criterion.getProperty());
+            System.out.println("Operator: " + criterion.getOp());
+            if(criterion.getValStr() != null){
+                System.out.println("Value: " + criterion.getValStr());
+            } else if(criterion.getValList() != null){
+                System.out.println("Value: " + Arrays.toString(criterion.getValList()));
+            } else{
+                System.out.println("Value: " + criterion.getVal());
+            }
+        }
     }
 }

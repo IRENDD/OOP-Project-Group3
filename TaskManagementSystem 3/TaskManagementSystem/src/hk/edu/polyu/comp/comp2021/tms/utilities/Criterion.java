@@ -92,30 +92,4 @@ public abstract class Criterion {
     }
 
     public abstract void create(String instruction, Map<String, Criterion> criterionMap);
-    public abstract void search(String instruction, Map<String, Criterion> criterionMap, Map <String, TMS>taskMap );
-    // define it however you'd lik
-    // must contain the following:
-    // DefineBasicCriterion
-    // can be used for both primitive and composite tasks
-    // check requirement 9
-
-    // IsPrimitive - you can use
-    // return (object instanceof PrimitiveTask); ... should give answer
-    // check requirement 10
-
-    // DefineNegatedCriterion
-    // should work only on existing criterion
-    // check requirement 11
-
-    // DefineBinaryCriterion
-    // it combines two existing criteria with an && or ||
-    // very simply, if you receive this instruction with criteria2, criteria3
-    // call criteria2 - returns result | call criteria3 - returns result
-    // return the common results in both according to the of && or ||
-
-    // Print all the criterion
-
-    // Search based on criterion
-    // can try | public TMS[] search (Criterion C){}
-
 }

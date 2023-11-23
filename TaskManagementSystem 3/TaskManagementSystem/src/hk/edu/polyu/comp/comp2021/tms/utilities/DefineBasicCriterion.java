@@ -3,6 +3,7 @@ import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 
 public class DefineBasicCriterion extends Criterion implements Serializable {
@@ -32,7 +33,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
             return;
         }
         if(!isName(name)){
-            System.out.println("Invalid CreateSimpleTask name format.");
+            System.out.println("Invalid DefineBasicCriterion name format.");
             return;
         }
 
@@ -55,44 +56,22 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
                     System.out.println("Invalid duration value: " + val);
                     return;
                 }
-            default:
+            case "prerequisite":
                 String[] valList = tokens[2].split(",");
                 criteria = new DefineBasicCriterion(name, property, "contains", valList);
                 break;
+            default:
+                System.out.println ("Invalid DefineBasicCriterion property format");
+                return;
         }
         criterionMap.put(name, criteria);
         System.out.println("Criteria created: " + name);
+
     }
 
-    public void search(String instruction, Map<String, Criterion> criterionMap, Map <String, TMS>taskMap){
-        // check the logic to see if it works
-        String[] tokens = instruction.split(" ");
-        String name = tokens[1];
-        if (tokens.length != 2) {
-            System.out.println("Invalid CreateSimpleTask command format.");
-            return;
-        }
-        if (!criterionMap.containsKey(name)) {
-            System.out.println("Criterion with the given name does not exist: " + name);
-            return;
-        }
-
-        Criterion criterion = criterionMap.get(name);
-        for(Map.Entry<String, TMS> entry : taskMap.entrySet()){
-            TMS task = entry.getValue();
-            if(task.getDescription() == criterion.getProperty()){
-                if(task.getDuration() == criterion.getVal()){
-
-                } else if(task.getPrerequisites().equals(criterion.getValList())){ // fix this part
-
-                }
-            }
-        }
-    }
-
-    public void printBasicCriterion(String instruction, Map<String,Criterion>criterionMap){
-        String[] tokens = instruction.split(" ");
-        String name = tokens[1];
+    public void printBasicCriterion(String name, Map<String,Criterion>criterionMap){
+        //String[] tokens = instruction.split(" ");
+        //String name = tokens[1];
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);
             System.out.println("Task Name: " + criterion.getName());
@@ -101,7 +80,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
             if(criterion.getValStr() != null){
                 System.out.println("Value: " + criterion.getValStr());
             } else if(criterion.getValList() != null){
-                System.out.println("Value: " + criterion.getValList());
+                System.out.println("Value: " + Arrays.toString(criterion.getValList()));
             } else{
                 System.out.println("Value: " + criterion.getVal());
             }
