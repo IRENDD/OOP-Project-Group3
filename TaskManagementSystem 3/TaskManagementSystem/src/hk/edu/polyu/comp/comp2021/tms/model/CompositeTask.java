@@ -89,54 +89,54 @@ public class CompositeTask extends TMS implements Serializable {
     }
 
     // [REQ5] Print Task
-    public void printTask (String instruction, Map<String,TMS>taskMap) {
+    public void printTask(String instruction, Map<String, TMS> taskMap) {
         String[] tokens = instruction.split(" ");
-        String name = tokens[1];
-        if (taskMap.containsKey(name)) {
-            TMS task = taskMap.get(name);
-            System.out.println("Task Name: " + task.getName());
-            System.out.println("Description: " + task.getDescription());
-            System.out.println("Subtasks: " + String.join(", ", task.getPrerequisites()));
-        } else {
-            System.out.println("Task not found: " + name);
+        if (tokens.length >= 2) {
+            String taskName = tokens[1];
+            TMS task = taskMap.get(taskName);
+            if (task instanceof CompositeTask) {
+                CompositeTask compositeTask = (CompositeTask) task;
+                System.out.println("Task Name: " + taskName);
+                System.out.println("Description: " + compositeTask.getDescription());
+                System.out.println("Subtasks: " + String.join(", ", compositeTask.getPrerequisites()));
+            } else {
+                System.out.println("Task Name: " + taskName);
+                System.out.println("Description: " + task.getDescription());
+            }
         }
     }
-    public double reportDuration(String taskName, Map<String,TMS>taskMap) {
+    public double reportDuration(String taskName, Map<String, TMS> taskMap) {
         if (taskMap.containsKey(taskName)) {
             TMS task = taskMap.get(taskName);
             if (task instanceof PrimitiveTask) {
                 return ((PrimitiveTask) task).getDuration();
             } else if (task instanceof CompositeTask) {
-                //PrimitiveTask primitiveTaskTask = (PrimitiveTask) task;
                 double duration = 0;
                 for (String subtaskName : task.getPrerequisites()) {
                     TMS subtask = taskMap.get(subtaskName);
-                    duration += subtask.getDuration();
+                    duration += reportDuration(subtaskName, taskMap);
                 }
                 duration += task.getDuration();
                 return duration;
             }
-        } else {
-            return 0;
         }
         return 0;
     }
-    public double reportEarliestFinishTime(String taskName, Map<String,TMS>taskMap) {
-        if (taskMap.containsKey(taskName)) {
-            TMS task = taskMap.get(taskName);
-            if (task instanceof PrimitiveTask) {
-                return ((PrimitiveTask) task).getEarliestFinishTime();
-            } else if (task instanceof CompositeTask) {
-               // PrimitiveTask primitiveTaskTask = (PrimitiveTask) task;
-                double earliestFinishTime = 0;
-                for (String subtaskName : task.getPrerequisites()) {
-                    TMS subtask = taskMap.get(subtaskName);
-                    earliestFinishTime = Math.max(earliestFinishTime, subtask.getEarliestFinishTime());
-                }
-                earliestFinishTime = Math.max(earliestFinishTime, task.getDuration());
-                return earliestFinishTime;
+
+    public double reportEarliestFinishTime(String taskName, Map<String, TMS> taskMap) {
+        double earliestFinishTime = 0.0;
+        TMS task = taskMap.get(taskName);
+
+        if (task instanceof CompositeTask) {
+            CompositeTask compositeTask = (CompositeTask) task;
+            for (String subtaskName : compositeTask.getPrerequisites()) {
+                double subtaskFinishTime = compositeTask.reportEarliestFinishTime(subtaskName, taskMap);
+                earliestFinishTime = Math.max(earliestFinishTime, subtaskFinishTime);
             }
+        } else if (task instanceof PrimitiveTask) {
+            earliestFinishTime = task.getDuration();
         }
-        return 0;
-    }
-}
+
+        earliestFinishTime += task.getDuration();
+        return earliestFinishTime;
+    }}

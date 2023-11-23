@@ -8,6 +8,7 @@ import java.util.*;
 
 public class Application {
     protected static Map<String, TMS> taskMap = new HashMap<>(); // initializing storage choice
+
     protected static Map<String, Criterion> criterionMap = new HashMap<>(); // HashMap for criterion
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {

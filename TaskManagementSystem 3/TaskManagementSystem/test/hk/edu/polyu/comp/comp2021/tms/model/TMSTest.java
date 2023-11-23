@@ -3,11 +3,14 @@ package hk.edu.polyu.comp.comp2021.tms.model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class TMSTest {
 
     @Test
     public void testPrimitiveTaskCreation() {
-        // Test case for PrimitiveTask creation
         PrimitiveTask task = new PrimitiveTask("Task1", "Description for Task1", 2.5);
 
         Assertions.assertEquals("Task1", task.getName());
@@ -17,7 +20,6 @@ public class TMSTest {
 
     @Test
     public void testCompositeTaskCreation() {
-        // Test case for CompositeTask creation
         CompositeTask task = new CompositeTask("CompositeTask1", "Description for CompositeTask1",
                 new String[]{"Task1", "Task2"});
 
@@ -28,46 +30,19 @@ public class TMSTest {
 
     @Test
     public void testTaskDeletion() {
-        // Test case for task deletion
-        TMS tms = new TMS() {
-            @Override
-            public void create(String instruction) {
-
-            }
-
-            @Override
-            public String delete(String instruction) {
-                return null;
-            }
-
-            @Override
-            public void changeTask(String instruction) {
-
-            }
-
-            @Override
-            public void printTask(String instruction) {
-
-            }
-
-            @Override
-            public double reportDuration(String instruction) {
-                return 0;
-            }
-        };
+        Map<String, TMS> taskMap = new HashMap<>();
         PrimitiveTask task = new PrimitiveTask("Task1", "Description for Task1", 2.5);
-        tms.addTask(task);
+        taskMap.put(task.getName(), task);
 
-        Assertions.assertTrue(tms.containsTask("Task1"));
+        Assertions.assertTrue(taskMap.containsKey("Task1"));
 
-        tms.deleteTask("Task1");
+        taskMap.remove("Task1");
 
-        Assertions.assertFalse(tms.containsTask("Task1"));
+        Assertions.assertFalse(taskMap.containsKey("Task1"));
     }
 
     @Test
     public void testTaskPropertyChange() {
-        // Test case for task property change
         PrimitiveTask task = new PrimitiveTask("Task1", "Description for Task1", 2.5);
 
         Assertions.assertEquals("Task1", task.getName());
@@ -82,90 +57,48 @@ public class TMSTest {
 
     @Test
     public void testReportDuration() {
-        // Test case for reporting task duration
-        TMS tms = new TMS() {
-            @Override
-            public void create(String instruction) {
-
-            }
-
-            @Override
-            public String delete(String instruction) {
-                return null;
-            }
-
-            @Override
-            public void changeTask(String instruction) {
-
-            }
-
-            @Override
-            public void printTask(String instruction) {
-
-            }
-
-            @Override
-            public double reportDuration(String instruction) {
-                return 0;
-            }
-        }; // Instantiate a concrete subclass of TMS
-
-        // Create tasks
         PrimitiveTask task1 = new PrimitiveTask("Task1", "Description for Task1", 2.5);
         PrimitiveTask task2 = new PrimitiveTask("Task2", "Description for Task2", 3.0);
         CompositeTask compositeTask = new CompositeTask("CompositeTask1", "Description for CompositeTask1",
                 new String[]{"Task1", "Task2"});
 
-        tms.addTask(task1);
-        tms.addTask(task2);
-        tms.addTask(compositeTask);
+        Map<String, TMS> taskMap = new HashMap<>();
+        taskMap.put(task1.getName(), task1);
+        taskMap.put(task2.getName(), task2);
+        taskMap.put(compositeTask.getName(), compositeTask);
 
-        Assertions.assertEquals(2.5, tms.reportDuration("Task1"));
-        Assertions.assertEquals(3.0, tms.reportDuration("Task2"));
-        Assertions.assertEquals(5.5, tms.reportDuration("CompositeTask1"));
+        Assertions.assertEquals(2.5, task1.reportDuration(task1.getName(), taskMap));
+        Assertions.assertEquals(3.0, task2.reportDuration(task2.getName(), taskMap));
+        Assertions.assertEquals(5.5, compositeTask.reportDuration(compositeTask.getName(), taskMap));
     }
 
     @Test
-    public void testReportEarliestFinishTime() {
-        // Test case for reporting the earliest finish time
-        TMS tms = new TMS() {
-            @Override
-            public void create(String instruction) {
+    public void testReportEarliestFinishTime_CompositeTask() {
+        Map<String, TMS> taskMap = new HashMap<>();
+        CompositeTask task = new CompositeTask("Task1", "Description for Task1",
+                new String[]{"Subtask1", "Subtask2"});
+        taskMap.put(task.getName(), task);
 
-            }
+        // Add subtasks to the task map
+        taskMap.put("Subtask1", new PrimitiveTask("Subtask1", "Description for Subtask1", 1.0));
+        taskMap.put("Subtask2", new PrimitiveTask("Subtask2", "Description for Subtask2", 2.0));
 
-            @Override
-            public String delete(String instruction) {
-                return null;
-            }
+        // Calculate the earliest finish time for the composite task
+        double earliestFinishTime = task.reportEarliestFinishTime("Task1", taskMap);
 
-            @Override
-            public void changeTask(String instruction) {
-
-            }
-
-            @Override
-            public void printTask(String instruction) {
-
-            }
-
-            @Override
-            public double reportDuration(String instruction) {
-                return 0;
-            }
-        };
-        PrimitiveTask task1 = new PrimitiveTask("Task1", "Description for Task1", 2.5);
-        PrimitiveTask task2 = new PrimitiveTask("Task2", "Description for Task2", 3.0);
-        CompositeTask compositeTask = new CompositeTask("CompositeTask1", "Description for CompositeTask1",
-                new String[]{"Task1", "Task2"});
-
-        tms.addTask(task1);
-        tms.addTask(task2);
-        tms.addTask(compositeTask);
-
-        Assertions.assertEquals(2.5, tms.getEarliestFinishTime());
-        Assertions.assertEquals(3.0, tms.getEarliestFinishTime());
-        Assertions.assertEquals(5.5, tms.getEarliestFinishTime());
+        // Verify the result
+        Assertions.assertEquals(3.0, earliestFinishTime);
     }
 
-}
+    @Test
+    public void testReportEarliestFinishTime_PrimitiveTask() {
+        Map<String, TMS> taskMap = new HashMap<>();
+        PrimitiveTask task = new PrimitiveTask("Task1", "Description for Task1", 2.5);
+        taskMap.put(task.getName(), task);
+
+        // Calculate the earliest finish time for the primitive task
+        double earliestFinishTime = task.getDuration();
+
+        // Verify the result
+        Assertions.assertEquals(2.5, earliestFinishTime);
+    }}

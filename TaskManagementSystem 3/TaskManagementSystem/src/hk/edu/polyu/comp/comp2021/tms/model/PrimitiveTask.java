@@ -78,33 +78,41 @@ public class PrimitiveTask extends TMS implements Serializable {
             System.out.println("Task not found: " + name);
         }
     }
-    public void printTask (String instruction, Map <String,TMS> taskMap) {
-        // add code
+    public void printTask(String instruction, Map<String, TMS> taskMap) {
         String[] tokens = instruction.split(" ");
-        String name = tokens[1];
-        if (taskMap.containsKey(name)) {
-            PrimitiveTask task = (PrimitiveTask) taskMap.get(name);
-            System.out.println("Task Name: " + task.getName());
-            System.out.println("Description: " + task.getDescription());
-            System.out.println("Duration: " + task.getDuration());
-        } else {
-            System.out.println("Task not found: " + name);
-
-        }
-    }
-
-    public double reportDuration (String instruction, Map<String, TMS> taskMap) {
-        String[] tokens = instruction.split(" ");
-        if (tokens.length >= 2 && tokens[1].equals("duration")) {
-            String taskName = tokens[2];
-            if (taskMap.containsKey(taskName)) {
-                return taskMap.get(taskName).getDuration();
+        if (tokens.length >= 2) {
+            String name = tokens[1];
+            if (taskMap.containsKey(name)) {
+                TMS task = taskMap.get(name);
+                System.out.println("Task Name: " + task.getName());
+                System.out.println("Description: " + task.getDescription());
+                if (task instanceof CompositeTask) {
+                    CompositeTask compositeTask = (CompositeTask) task;
+                    System.out.println("Subtasks: " + String.join(", ", compositeTask.getPrerequisites()));
+                }
             } else {
-                return 0;
+                System.out.println("Task not found: " + name);
             }
         } else {
-            return 0;
+            System.out.println("Invalid PrintTask command format.");
+        }}
+
+    public double reportDuration(String taskName, Map<String, TMS> taskMap) {
+        if (taskMap.containsKey(taskName)) {
+            TMS task = taskMap.get(taskName);
+            if (task instanceof PrimitiveTask) {
+                return ((PrimitiveTask) task).getDuration();
+            } else if (task instanceof CompositeTask) {
+                double duration = 0;
+                for (String subtaskName : task.getPrerequisites()) {
+                    TMS subtask = taskMap.get(subtaskName);
+                    duration += reportDuration(subtaskName, taskMap);
+                }
+                duration += task.getDuration();
+                return duration;
+            }
         }
+        return 0;
     }
 
 }

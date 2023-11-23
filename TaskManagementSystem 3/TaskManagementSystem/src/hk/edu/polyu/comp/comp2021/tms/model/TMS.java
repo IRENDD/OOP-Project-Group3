@@ -29,7 +29,27 @@ public abstract class TMS {
         this.description = description;
         this.prerequisites = Arrays.asList (subtaskNames);
     }
-    //Map<String, TMS> taskMap = Application.taskMap;
+
+
+    public void addTask(TMS task, Map<String, TMS> taskMap) {
+        taskMap.put(task.getName(), task);
+    }
+
+    public void addTask(PrimitiveTask task, Map<String, TMS> taskMap) {
+        taskMap.put(task.getName(), task);
+    }
+
+    public boolean containsTask(String taskName, Map<String, TMS> taskMap) {
+        return taskMap.containsKey(taskName);
+    }
+
+    public void deleteTask(String taskName, Map<String, TMS> taskMap) {
+        taskMap.remove(taskName);
+    }
+
+    public double getEarliestFinishTime() {
+        return getDuration();
+    }
 
     /* Functions to return values from object fields */
     public String getName() {
@@ -92,7 +112,5 @@ public abstract class TMS {
     public abstract void changeTask (String instruction, Map<String,TMS>taskMap);
     public abstract void printTask (String instruction, Map<String,TMS>taskMap);
     public abstract double reportDuration (String instruction, Map<String,TMS>taskMap);
-    public double getEarliestFinishTime() {
-        return getDuration();
-    }
+
 }
