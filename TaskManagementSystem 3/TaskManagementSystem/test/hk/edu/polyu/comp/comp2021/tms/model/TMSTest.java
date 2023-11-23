@@ -91,14 +91,20 @@ public class TMSTest {
     }
 
     @Test
-    public void testReportEarliestFinishTime_PrimitiveTask() {
-        Map<String, TMS> taskMap = new HashMap<>();
-        PrimitiveTask task = new PrimitiveTask("Task1", "Description for Task1", 2.5);
-        taskMap.put(task.getName(), task);
+    public double reportEarliestFinishTime(String taskName, Map<String, TMS> taskMap) {
+        double earliestFinishTime = 0.0;
+        TMS task = taskMap.get(taskName);
 
-        // Calculate the earliest finish time for the primitive task
-        double earliestFinishTime = task.getDuration();
+        if (task instanceof CompositeTask) {
+            CompositeTask compositeTask = (CompositeTask) task;
+            for (String subtaskName : compositeTask.getPrerequisites()) {
+                double subtaskFinishTime = compositeTask.reportEarliestFinishTime(subtaskName, taskMap);
+                earliestFinishTime = Math.max(earliestFinishTime, subtaskFinishTime);
+            }
+        } else if (task instanceof PrimitiveTask) {
+            earliestFinishTime = task.getDuration();
+        }
 
-        // Verify the result
-        Assertions.assertEquals(2.5, earliestFinishTime);
+        earliestFinishTime += task.getDuration();
+        return earliestFinishTime;
     }}
