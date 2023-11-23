@@ -10,7 +10,7 @@ public class DefineBinaryCriterion extends Criterion{
     public DefineBinaryCriterion(){ super(); }
     public DefineBinaryCriterion(String name, String name2, String logicOp, String name3){ super(name, name2, logicOp, name3); }
 
-    public DefineBinaryCriterion(Criterion criterion, Criterion criterion2, String op){ super(criterion, criterion2, op); }
+    public DefineBinaryCriterion(String name, Criterion criterion, Criterion criterion2, String op){ super(name, criterion, criterion2, op); }
 
     @Override
     public void create(String instruction, Map <String, Criterion> criterionMap){
@@ -44,7 +44,7 @@ public class DefineBinaryCriterion extends Criterion{
         Criterion criterion = criterionMap.get(name2);
         Criterion criterion2 = criterionMap.get(name3);
 
-        DefineBinaryCriterion binaryCriterion = new DefineBinaryCriterion(criterion, criterion2, logicOp);
+        DefineBinaryCriterion binaryCriterion = new DefineBinaryCriterion(name, criterion, criterion2, logicOp);
         criterionMap.put(name, binaryCriterion);
         System.out.println("Binary criteria of " + name2 + " and " + name3 + " created: " + name);
     }
@@ -107,6 +107,18 @@ public class DefineBinaryCriterion extends Criterion{
             for(TMS task : matching){
                 System.out.println(task.toString());
             }
+        }
+    }
+    public void printBinaryCriterion(String name, Map<String,Criterion>criterionMap){
+        if(criterionMap.containsKey(name)){
+            DefineBinaryCriterion criterion = (DefineBinaryCriterion) criterionMap.get(name);
+            Criterion criterion1 = (Criterion) criterion.getCriterion();
+            Criterion criterion2 = (Criterion) criterion.getCriterion2();
+
+            System.out.println("Name: " + criterion.getName());
+            System.out.println("Criteria 1 : " + criterion1.getName());
+            System.out.println("Operator: " + criterion.getOp());
+            System.out.println ("Criteria 2: " + criterion2.getName());
         }
     }
 }

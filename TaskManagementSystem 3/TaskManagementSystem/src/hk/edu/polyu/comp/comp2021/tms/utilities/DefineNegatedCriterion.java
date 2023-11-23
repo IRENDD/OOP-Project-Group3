@@ -39,9 +39,9 @@ public class DefineNegatedCriterion extends Criterion{
             case "name":
             case "description":
                 if(op == "contains"){
-                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "notContains", criterion.getValStr().substring(1,criterion.getValStr().length()-2));
+                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "notContains", criterion.getValStr().substring(1,criterion.getValStr().length()-1));
                 } else{
-                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "contains", criterion.getValStr().substring(1,criterion.getValStr().length()-2));
+                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "contains", criterion.getValStr().substring(1,criterion.getValStr().length()-1));
                 }
                 break;
             case "duration":
@@ -125,7 +125,7 @@ public class DefineNegatedCriterion extends Criterion{
             if(criterion.getValStr() != null){
                 System.out.println("Value: " + criterion.getValStr());
             } else if(criterion.getValList() != null){
-                System.out.println("Value: " + criterion.getValList());
+                System.out.println("Value: " + String.join(", ", criterion.getValList()));
             } else{
                 System.out.println("Value: " + criterion.getVal());
             }

@@ -40,7 +40,7 @@ public class DefineBasicCriterion extends Criterion {
         switch (property) {
             case "name":
             case "description":
-                criteria = new DefineBasicCriterion(name, property, "contains", val.substring(1,val.length()-2));
+                criteria = new DefineBasicCriterion(name, property, "contains", val.substring(1,val.length()-1));
                 break;
             case "duration":
                 try {
@@ -55,7 +55,7 @@ public class DefineBasicCriterion extends Criterion {
                     return;
                 }
             case "prerequisites":
-                String[] valList = tokens[2].split(",");
+                String[] valList = tokens[4].split(",");
                 criteria = new DefineBasicCriterion(name, property, "contains", valList);
                 break;
             default:
@@ -87,6 +87,7 @@ public class DefineBasicCriterion extends Criterion {
         ArrayList<TMS> matching = new ArrayList<>();
         for(Map.Entry<String, TMS> entry : taskMap.entrySet()) {
             TMS task = entry.getValue();
+            System.out.println(task + " is the object passed");
             if(op.equals("contains") && containsCriterion(criterion, task)){
                 matching.add(task);
             } else if(op.equals("notContains") && !containsCriterion(criterion, task)){
@@ -115,7 +116,7 @@ public class DefineBasicCriterion extends Criterion {
             if(criterion.getValStr() != null){
                 System.out.println("Value: " + criterion.getValStr());
             } else if(criterion.getValList() != null){
-                System.out.println("Value: " + criterion.getValList());
+                System.out.println("Value: " + String.join(", ", criterion.getValList()));
             } else{
                 System.out.println("Value: " + criterion.getVal());
             }

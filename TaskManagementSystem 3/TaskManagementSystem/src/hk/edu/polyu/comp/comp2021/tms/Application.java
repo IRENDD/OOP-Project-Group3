@@ -89,7 +89,7 @@ public class Application {
 
             } else if (input.startsWith("DefineNegatedCriterion")) { criteriaNe.create (input, criterionMap);
 
-            } else if (input.startsWith("DefineBinaryCriterion")) { criteriaBa.create(input, criterionMap);
+            } else if (input.startsWith("DefineBinaryCriterion")) { criteriaBi.create(input, criterionMap);
 
             } else if (input.startsWith("PrintAllCriteria")) {
                 // call respective function - Ilyas
@@ -102,15 +102,20 @@ public class Application {
                     }
                     else if (criteria instanceof DefineBinaryCriterion){
                         // call the function created here
+                        criteriaBi.printBinaryCriterion(criteria.getName(), criterionMap);
                     }
                     else {System.out.println ("Invalid Criterion found");}
                 }
             } else if (input.startsWith("Search")) {
                 // call respective function - Ilyas
-                criteriaBa.search(input, taskMap, criterionMap);
-                //criteriaNe.search(input, taskMap, criterionMap);
-                //criteriaBi.search(input, taskMap, criterionMap);
-
+                for (Criterion criteria : criterionMap.values()){
+                    if (criteria.getName().equals(input.split(" ")[1])){
+                        if (criteria instanceof DefineBasicCriterion) criteriaBa.search(input, taskMap, criterionMap);
+                        else if (criteria instanceof DefineNegatedCriterion) criteriaNe.search(input, taskMap, criterionMap);
+                        else{criteriaBi.search(input, taskMap, criterionMap);}
+                    }
+                    //else {System.out.println ("Criterion with name "+input.split(" ")[1]+ " does not exist");}
+                }
             } else if (input.startsWith("Store")) {
                 UserControl.saveMap (input,taskMap, criterionMap);
 

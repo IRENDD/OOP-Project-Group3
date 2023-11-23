@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Criterion {
+public abstract class Criterion{
     private String name;
     private String name2;
     private String name3;
@@ -44,7 +44,8 @@ public abstract class Criterion {
         this.name = name;
         this.name2 = name2;
     }
-    public Criterion(Criterion criterion, Criterion criterion2, String op){
+    public Criterion(String name, Criterion criterion, Criterion criterion2, String op){
+        this.name = name;
         this.criterion = criterion;
         this.criterion2 = criterion2;
         this.op = op;
@@ -101,12 +102,20 @@ public abstract class Criterion {
         return true;
     }
     protected boolean containsCriterion(Criterion criterion, TMS task) {
-        return criterion.getValStr().equals(task.getName())
-                || criterion.getValStr().equals(task.getDescription())
-                || criterion.getValList().equals(task.getPrerequisites());
+        switch (criterion.getProperty()) {
+            case "name":
+                return criterion.getValStr().equals(task.getName());
+            case "description":
+                return criterion.getValStr().equals(task.getDescription());
+            case "prerequisites":
+                return criterion.getValList().equals(task.getPrerequisites());
+            // Add more property cases as needed
+            default:
+                return false;
+        }
     }
 
-    protected boolean checkDurationCriterion(Criterion criterion, TMS task) {
+    public boolean checkDurationCriterion(Criterion criterion, TMS task) {
         switch (criterion.getOp()) {
             case ">":
                 return task.getDuration() > criterion.getVal();
