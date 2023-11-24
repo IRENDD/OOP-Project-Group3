@@ -59,54 +59,40 @@ public class UserControl {
         }
         else {System.out.println ("File Path declaration incorrect. Please do not add space characters in the path.");}
     }
-    public static void saveMap (String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap) throws IOException {
+    public static void saveMap(String instruction, Map<String, TMS> taskMap, Map<String, Criterion> criterionMap) throws IOException {
         String[] inputArray = instruction.split(" ");
         if (inputArray.length == 2) {
             try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(inputArray[1]))) {
-                // writing the TMS objects
-                for (TMS task : taskMap.values()){
-                    oos.writeObject (task);
-                }
-                //oos.writeObject(taskMap);
-                // writing the Criterion objects
-                for (Criterion criteria : criterionMap.values()){
-                    oos.writeObject (criteria);
-                }
-                //oos.writeObject(criterionMap);
-                System.out.println ("Files were updated successfully");
+                oos.writeObject(taskMap);
+                oos.writeObject(criterionMap);
+                System.out.println("Files were updated successfully");
+            } catch (FileNotFoundException e) {
+                System.out.println("The file path was not found. Try again");
+            } catch (NotSerializableException e) {
+                System.out.println("There is an implementation error.");
             }
-            catch (FileNotFoundException e) {System.out.println ("The file path was not found. Try again");}
-            catch (NotSerializableException e) {System.out.println ("There is an implementation error.");}
+        } else {
+            System.out.println("Invalid format for Store function");
         }
-        else {System.out.println ("Invalid format for Store function");}
     }
 
-    public static void loadMap (String instruction, Map<String, TMS> taskMap, Map<String, Criterion> criterionMap) throws IOException, ClassNotFoundException {
-        String[] inputArray = instruction.split (" ");
-        Map<String, Object> rawMap = new HashMap<>();
-        if (inputArray.length ==2){
-            try (ObjectInputStream ois = new ObjectInputStream (new FileInputStream(inputArray[1]))) {
-                while (true) {
-                    Object objectRead = ois.readObject();
-                    rawMap.put(objectRead.toString(), objectRead);
-                }
+    public static void loadMap(String instruction, Map<String, TMS> taskMap, Map<String, Criterion> criterionMap) throws IOException, ClassNotFoundException {
+        String[] inputArray = instruction.split(" ");
+        if (inputArray.length == 2) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(inputArray[1]))) {
+                taskMap.clear();
+                criterionMap.clear();
+                taskMap.putAll((Map<String, TMS>) ois.readObject());
+                criterionMap.putAll((Map<String, Criterion>) ois.readObject());
+                System.out.println("All lines within file have been read.");
+            } catch (FileNotFoundException e) {
+                System.out.println("Specified directory is not found or cannot be accessed.");
+            } catch (EOFException e) {
+                System.out.println("End of file reached.");
             }
-            catch (FileNotFoundException e) {System.out.println ("Specified directory is not found or cannot be accessed.");}
-            catch (EOFException e) {
-                System.out.println ("All lines within file have been read.");
-                for (Object object : rawMap.values()){
-                    if (object instanceof TMS) {
-                        TMS task = (TMS) object;
-                        taskMap.put (task.getName(), task);
-                    }
-                    else if (object instanceof Criterion){
-                        Criterion crt = (Criterion) object;
-                        criterionMap.put (crt.getName(), crt);
-                    }
-                }
-            }
+        } else {
+            System.out.println("Invalid Syntax for Load");
         }
-        else {System.out.println ("Invalid Syntax for Load");}
     }
 }
 

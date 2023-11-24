@@ -2,13 +2,14 @@ package hk.edu.polyu.comp.comp2021.tms.model;
 
 import hk.edu.polyu.comp.comp2021.tms.Application;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 
 
-public abstract class TMS {
+public abstract class TMS implements Serializable {
     private String name;
     private String description;
     private double duration;

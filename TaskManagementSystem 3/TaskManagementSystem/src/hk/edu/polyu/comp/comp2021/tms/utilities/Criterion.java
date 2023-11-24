@@ -2,11 +2,12 @@ package hk.edu.polyu.comp.comp2021.tms.utilities;
 
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Criterion{
+public abstract class Criterion implements Serializable {
     private String name;
     private String name2;
     private String name3;

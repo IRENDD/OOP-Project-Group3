@@ -24,7 +24,7 @@ public class Application {
         introduction();
 
         while (true) {
-            System.out.println("\nEnter a command (CreatePrimitiveTask, CreateCompositeTask, PrintAllTasks, PrintTask, DeleteTask, ChangeTask, or Quit):");
+            System.out.println("\nEnter a command : ");
             String input = scanner.nextLine();
 
             if (input.startsWith("CreatePrimitiveTask")) {taskP.create(input,taskMap);}
