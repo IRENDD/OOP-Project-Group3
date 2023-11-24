@@ -9,6 +9,15 @@ import java.util.Map;
 public class DefineNegatedCriterion extends Criterion{
     public DefineNegatedCriterion(){ super(); }
     public DefineNegatedCriterion(String name, String name2){ super(name, name2); }
+    public DefineNegatedCriterion(String name, String property, String op, double val) {
+        super(name, property, op, val);
+    }
+    public DefineNegatedCriterion(String name, String property, String op, String val) {
+        super(name, property, op, val);
+    }
+    public DefineNegatedCriterion(String name, String property, String op, String[] val) {
+        super(name, property, op, val);
+    }
 
     @Override
     public void create(String instruction, Map <String, Criterion> criterionMap){
@@ -34,14 +43,14 @@ public class DefineNegatedCriterion extends Criterion{
         Criterion criterion = criterionMap.get(name2);
         String property = criterion.getProperty(), op = criterion.getOp();
 
-        DefineBasicCriterion negCriterion = null;
+        DefineNegatedCriterion negCriterion = null;
         switch (property) {
             case "name":
             case "description":
                 if(op == "contains"){
-                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "notContains", criterion.getValStr().substring(1,criterion.getValStr().length()-1));
+                    negCriterion = new DefineNegatedCriterion(name, property, "notContains", criterion.getValStr());
                 } else{
-                    negCriterion = new DefineBasicCriterion(criterion.getName(), property, "contains", criterion.getValStr().substring(1,criterion.getValStr().length()-1));
+                    negCriterion = new DefineNegatedCriterion(name, property, "contains", criterion.getValStr());
                 }
                 break;
             case "duration":
@@ -53,10 +62,10 @@ public class DefineNegatedCriterion extends Criterion{
                     String[] operators = { ">", "<=", "<", ">=", "==", "!=" };
                     for(int i = 0; i < operators.length; i++){
                         if(op.equals(operators[i]) && i % 2 == 0){
-                            negCriterion = new DefineBasicCriterion(name, property, operators[i + 1], criterion.getVal());
+                            negCriterion = new DefineNegatedCriterion(name, property, operators[i + 1], criterion.getVal());
                             break;
                         } else if(op.equals(operators[i]) && i % 2 == 1){
-                            negCriterion = new DefineBasicCriterion(name, property, operators[i - 1], criterion.getVal());
+                            negCriterion = new DefineNegatedCriterion(name, property, operators[i - 1], criterion.getVal());
                             break;
                         }
                     }
@@ -67,9 +76,9 @@ public class DefineNegatedCriterion extends Criterion{
                 }
             default:
                 if(op == "contains"){
-                    negCriterion = new DefineBasicCriterion(name, property, "notContains", String.valueOf(criterion.getValList()));
+                    negCriterion = new DefineNegatedCriterion(name, property, "notContains", String.valueOf(criterion.getValList()));
                 } else{
-                    negCriterion = new DefineBasicCriterion(name, property, "contains", String.valueOf(criterion.getValList()));
+                    negCriterion = new DefineNegatedCriterion(name, property, "contains", String.valueOf(criterion.getValList()));
                 }
                 break;
         }
@@ -111,8 +120,10 @@ public class DefineNegatedCriterion extends Criterion{
             return;
         } else{
             System.out.println("Tasks matching the given criterion:");
+            int cnt = 0;
             for(TMS task : matching){
-                System.out.println(task.toString());
+                cnt++;
+                System.out.println(cnt + "." + task.getName());
             }
         }
     }

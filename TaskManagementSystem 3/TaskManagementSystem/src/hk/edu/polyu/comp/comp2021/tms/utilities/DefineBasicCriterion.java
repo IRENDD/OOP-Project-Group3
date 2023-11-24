@@ -101,8 +101,10 @@ public class DefineBasicCriterion extends Criterion {
             return;
         } else{
             System.out.println("Tasks matching the given criterion:");
+            int cnt = 0;
             for(TMS task : matching){
-                System.out.println(task.toString());
+                cnt++;
+                System.out.println(cnt + "." + task.getName());
             }
         }
     }

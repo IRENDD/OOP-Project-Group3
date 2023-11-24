@@ -79,7 +79,7 @@ public class DefineBinaryCriterion extends Criterion{
 
             if(op1.equals("contains") && containsCriterion(criterion1, task)){
                 criteriaMet1 = true;
-            } else if(op1.equals("notContains") && containsCriterion(criterion1, task)){
+            } else if(op1.equals("notContains") && !containsCriterion(criterion1, task)){
                 criteriaMet1 = true;
             } else if(property1.equals("duration") && checkDurationCriterion(criterion1, task)){
                 criteriaMet1 = true;
@@ -87,7 +87,7 @@ public class DefineBinaryCriterion extends Criterion{
 
             if(op2.equals("contains") && containsCriterion(criterion2, task)){
                 criteriaMet2 = true;
-            } else if(op2.equals("notContains") && containsCriterion(criterion2, task)){
+            } else if(op2.equals("notContains") && !containsCriterion(criterion2, task)){
                 criteriaMet2 = true;
             } else if(property2.equals("duration") && checkDurationCriterion(criterion2, task)){
                 criteriaMet2 = true;
@@ -104,8 +104,10 @@ public class DefineBinaryCriterion extends Criterion{
             return;
         } else{
             System.out.println("Tasks matching the given criterion:");
+            int cnt = 0;
             for(TMS task : matching){
-                System.out.println(task.toString());
+                cnt++;
+                System.out.println(cnt + "." + task.getName());
             }
         }
     }
