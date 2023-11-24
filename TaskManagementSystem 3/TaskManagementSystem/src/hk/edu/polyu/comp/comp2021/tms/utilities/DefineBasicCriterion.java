@@ -87,7 +87,7 @@ public class DefineBasicCriterion extends Criterion {
         ArrayList<TMS> matching = new ArrayList<>();
         for(Map.Entry<String, TMS> entry : taskMap.entrySet()) {
             TMS task = entry.getValue();
-            System.out.println(task + " is the object passed");
+            //System.out.println(task + " is the object passed");
             if(op.equals("contains") && containsCriterion(criterion, task)){
                 matching.add(task);
             } else if(op.equals("notContains") && !containsCriterion(criterion, task)){
