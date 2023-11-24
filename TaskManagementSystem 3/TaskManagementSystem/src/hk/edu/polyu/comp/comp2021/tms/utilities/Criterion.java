@@ -9,9 +9,6 @@ import java.util.Map;
 
 public abstract class Criterion implements Serializable {
     private String name;
-    private String name2;
-    private String name3;
-
     private String property;
     private String op;
     private double val;
@@ -41,22 +38,12 @@ public abstract class Criterion implements Serializable {
         this.op = op;
         this.valList = Arrays.asList(val);
     }
-    public Criterion(String name, String name2){
-        this.name = name;
-        this.name2 = name2;
-    }
-    public Criterion(String name, Criterion criterion, Criterion criterion2, String op){
+    public Criterion(String name, Criterion criterion, String op, Criterion criterion2){
         this.name = name;
         this.criterion = criterion;
-        this.criterion2 = criterion2;
         this.op = op;
+        this.criterion2 = criterion2;
     }
-//    public Criterion(String name, String name2, String op, String name3){
-//        this.name = name;
-//        this.name2 = name2;
-//        this.op = op;
-//        this.name3 = name3;
-//    }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -75,12 +62,6 @@ public abstract class Criterion implements Serializable {
 
     public List<String> getValList() { return valList; }
     public void setValList(List<String> valList) { this.valList = valList; }
-
-    public String getName2() { return name2; }
-    public void setName2(String name2) { this.name2 = name2; }
-
-    public String getName3() { return name3; }
-    public void setName3(String name3) { this.name3 = name3; }
 
     public Criterion getCriterion() { return criterion; }
     public void setCriterion(Criterion criterion) { this.criterion = criterion; }
@@ -109,8 +90,18 @@ public abstract class Criterion implements Serializable {
             case "description":
                 return criterion.getValStr().equals(task.getDescription());
             case "prerequisites":
-                return criterion.getValList().equals(task.getPrerequisites());
-            // Add more property cases as needed
+                List<String> valList = criterion.getValList();
+                List<String> prerequisites = task.getPrerequisites();
+                boolean allPrerequisites = true;
+
+                if(prerequisites == null) return false;
+                for (String val : valList) {
+                    if (!prerequisites.contains(val)) {
+                        allPrerequisites = false;
+                        break;
+                    }
+                }
+                return allPrerequisites;
             default:
                 return false;
         }
