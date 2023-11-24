@@ -8,7 +8,11 @@ import java.util.List;
 import java.lang.String;
 import java.util.Map;
 
-
+/**
+ * Class used to create Primitive Tasks. It inherits from the abstract class TMS
+ * The class also implements the Serializable interface which is used
+ * for saving and loading its contents to a file.
+ */
 public class PrimitiveTask extends TMS implements Serializable {
 
     /**
