@@ -107,4 +107,107 @@ public class TMSTest {
 
         earliestFinishTime += task.getDuration();
         return earliestFinishTime;
-    }}
+    }
+
+    @Test
+    public void testConstructorAndGetters() {
+        TMS task1 = new TMS("Task1", "Description1", 2.5) {
+            @Override
+            public void create(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public String delete(String instruction, Map<String, TMS> taskMap) {
+                return null;
+            }
+
+            @Override
+            public void changeTask(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public void printTask(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public double reportDuration(String instruction, Map<String, TMS> taskMap) {
+                return 0;
+            }
+        };
+        Assertions.assertEquals("Task1", task1.getName());
+        Assertions.assertEquals("Description1", task1.getDescription());
+        Assertions.assertEquals(2.5, task1.getDuration(), 0.001);
+
+        TMS task2 = new TMS("Task2", "Description2", 1.5) {
+            @Override
+            public void create(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public String delete(String instruction, Map<String, TMS> taskMap) {
+                return null;
+            }
+
+            @Override
+            public void changeTask(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public void printTask(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public double reportDuration(String instruction, Map<String, TMS> taskMap) {
+                return 0;
+            }
+        };
+        Assertions.assertEquals("Task2", task2.getName());
+        Assertions.assertEquals("Description2", task2.getDescription());
+        Assertions.assertEquals(1.5, task2.getDuration(), 0.001);
+    }
+
+    @Test
+    public void testSetters() {
+        TMS task = new TMS("Task1", "Description1", 2.5) {
+            @Override
+            public void create(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public String delete(String instruction, Map<String, TMS> taskMap) {
+                return null;
+            }
+
+            @Override
+            public void changeTask(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public void printTask(String instruction, Map<String, TMS> taskMap) {
+
+            }
+
+            @Override
+            public double reportDuration(String instruction, Map<String, TMS> taskMap) {
+                return 0;
+            }
+        };
+
+        task.setName("NewTaskName");
+        Assertions.assertEquals("NewTaskName", task.getName());
+
+        task.setDescription("NewDescription");
+        Assertions.assertEquals("NewDescription", task.getDescription());
+
+        task.setDuration(3.0);
+        Assertions.assertEquals(3.0, task.getDuration(), 0.001);
+    }
+}
