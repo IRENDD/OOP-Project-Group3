@@ -8,10 +8,18 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class DefineBinaryCriterion extends Criterion implements Serializable {
+    /**
+     * Default constructor for the DefineBinaryCriterion class. <p>
+     * This no-argument constructor calls the Criterion class's no-argument constructor.
+     */
     public DefineBinaryCriterion(){ super(); }
-    public DefineBinaryCriterion(String name, String name2, String logicOp, String name3){ super(name, name2, logicOp, name3); }
 
-    public DefineBinaryCriterion(String name, Criterion criterion, Criterion criterion2, String op){ super(name, criterion, criterion2, op); }
+    /** Constructor for the Binary Criterion
+     *@param name contains the name of the basic criterion
+     * @param criterion contains the first criterion
+     * @param criterion2 contains the logical operator for the two criterias
+     * @param op contains the second criterion*/
+    public DefineBinaryCriterion(String name, Criterion criterion, String op, Criterion criterion2){ super(name, criterion, op, criterion2); }
 
     @Override
     public void create(String instruction, Map <String, Criterion> criterionMap){
@@ -45,7 +53,7 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
         Criterion criterion = criterionMap.get(name2);
         Criterion criterion2 = criterionMap.get(name3);
 
-        DefineBinaryCriterion binaryCriterion = new DefineBinaryCriterion(name, criterion, criterion2, logicOp);
+        DefineBinaryCriterion binaryCriterion = new DefineBinaryCriterion(name, criterion, logicOp, criterion2);
         criterionMap.put(name, binaryCriterion);
         System.out.println("Binary criteria of " + name2 + " and " + name3 + " created: " + name);
     }

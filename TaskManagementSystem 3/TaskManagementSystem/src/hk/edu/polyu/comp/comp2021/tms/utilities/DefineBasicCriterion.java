@@ -8,17 +8,45 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class DefineBasicCriterion extends Criterion implements Serializable {
+
+    /**
+     * Default constructor for the DefineBasicCriterion class. <p>
+     * This no-argument constructor calls the Criterion class's no-argument constructor.
+     */
     public DefineBasicCriterion(){
         super();
     }
+
+    /** Constructor for the Basic Criterion
+     *@param name contains the name of the basic criterion
+     * @param property contains the property of the criterion
+     * @param op contains the operator of the criterion
+     * @param val contains the value with the type of string needed to the criterion*/
     public DefineBasicCriterion(String name, String property, String op, double val) {
         super(name, property, op, val);
     }
+
+    /** Constructor for the Basic Criterion
+     *@param name contains the name of the DefineBasicCriterion Task
+     * @param property contains the property of the criterion
+     * @param op contains the operator of the criterion
+     * @param val contains the value with the type of string needed to the criterion*/
     public DefineBasicCriterion(String name, String property, String op, String val) {
         super(name, property, op, val);
     }
+
+    /** Constructor for the Basic Criterion
+     *@param name contains the name of the basic criterion
+     * @param property contains the property of the criterion
+     * @param op contains the operator of the criterion
+     * @param val contains the value with the list of string needed to the criterion*/
     public DefineBasicCriterion(String name, String property, String op, String[] val) { super(name, property, op, val); }
 
+
+    /**Method to create a Basic Criterion
+     * This method expects an instruction string and a Map that stores criterias
+     * @param instruction A string representing the entire user input
+     * @param criterionMap stores the user's criterion information*/
     @Override
     public void create(String instruction, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
@@ -67,6 +95,12 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
         System.out.println("Criteria created: " + name);
     }
 
+
+    /**Method to create a Basic Criterion
+     * This method expects an instruction string, a Map that stores tasks, and another Map that stores criterias
+     * @param instruction A string representing the entire user input
+     * @param taskMap A map that stores the user's tasks, mapped by their names. The task to be modified should be present in this map.
+     * @param criterionMap stores the user's criterion information */
     @Override
     public void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
@@ -110,6 +144,12 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
         }
     }
 
+    /**Method to print a Basic criterion
+     * This method expects an instruction string and a Map that stores criterias
+     * It will format and print all the tasks currently found in the system
+     *
+     * @param name A string representing criterion name
+     * @param criterionMap stores the user's criterion information*/
     public void printBasicCriterion(String name, Map<String,Criterion>criterionMap){
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);

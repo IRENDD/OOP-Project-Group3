@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class DefineNegatedCriterion extends Criterion implements Serializable {
     public DefineNegatedCriterion(){ super(); }
-    public DefineNegatedCriterion(String name, String name2){ super(name, name2); }
     public DefineNegatedCriterion(String name, String property, String op, double val) {
         super(name, property, op, val);
     }
@@ -75,13 +74,17 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
                     System.out.println("Invalid duration value: " + criterion.getVal());
                     return;
                 }
-            default:
-                if(op == "contains"){
-                    negCriterion = new DefineNegatedCriterion(name, property, "notContains", String.valueOf(criterion.getValList()));
+            case "prerequisites":
+                String[] valList = criterion.getValList().toArray(new String[0]);
+                if(op.equals("contains")){
+                    negCriterion = new DefineNegatedCriterion(name, property, "notContains", valList);
                 } else{
-                    negCriterion = new DefineNegatedCriterion(name, property, "contains", String.valueOf(criterion.getValList()));
+                    negCriterion = new DefineNegatedCriterion(name, property, "contains", valList);
                 }
                 break;
+            default:
+                System.out.println("Invalid DefineNegatedCriterion property format");
+                return;
         }
         criterionMap.put(name, negCriterion);
         System.out.println("Negative criteria of " + name2 + " created: " + name);
