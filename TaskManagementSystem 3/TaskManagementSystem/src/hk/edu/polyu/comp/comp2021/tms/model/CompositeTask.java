@@ -1,12 +1,10 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
-import hk.edu.polyu.comp.comp2021.tms.Application;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-//import static hk.edu.polyu.comp.comp2021.tms.Application.taskMap;
 
 /**
  * Class used to create Composite Tasks. It inherits from the abstract class TMS
@@ -23,7 +21,7 @@ public class CompositeTask extends TMS implements Serializable {
     }
 
     /** Constructors for the composite task
-     *@param name contains the name of the Primitive Task
+     * @param name contains the name of the Primitive Task
      * @param description contains the description of the task
      * @param subtasks contains the time needed to complete the task*/
     public CompositeTask(String name, String description, String[] subtasks){
@@ -34,8 +32,9 @@ public class CompositeTask extends TMS implements Serializable {
      * This method expects an instruction string and a Map that stores tasks
      * the instruction is split to obtain the required information for task creation
      *
-     * @param instruction A string representing the entire user input
-     * @param taskMap the taskMap that stores the user information*/
+     * @param instruction contains string representation of entire user input
+     * @param taskMap contains a map that stores the user information*/
+    @Override
     public void create(String instruction, Map<String,TMS>taskMap) {
         // add code
         String[] tokens = instruction.split(" ");
@@ -63,37 +62,52 @@ public class CompositeTask extends TMS implements Serializable {
     /**Method to delete a Composite Task
      * This method expects an instruction string and a Map that stores tasks
      *
-     * @param instruction A string representing the entire user input
-     * @param taskMap the taskMap that stores the user information
-     * @return Name of deleted task*/
+     * @param instruction contains string representation of entire user input
+     * @param taskMap contains a map that stores the user information
+     * @return String representation of deleted task name */
+    @Override
     public String delete (String instruction, Map<String,TMS>taskMap) {
         String[] tokens = instruction.split(" ");
-        String name = tokens[1];
-        if (taskMap.containsKey(name)) {
-            TMS task = taskMap.get(name);
-            if (task instanceof CompositeTask) {
-                // Check if any subtasks are prerequisites for other tasks
-                for (String subtaskName : ((CompositeTask) task).getPrerequisites()) {
-                    for (TMS t : taskMap.values()) {
-                        if (t.getPrerequisites().contains(subtaskName)) {
-                            return "Cannot delete, subtask is a prerequisite for other tasks: " + subtaskName;
-                        }
+        String taskName = tokens[1];
+
+        if (taskMap.containsKey(taskName)) {
+            TMS task = taskMap.get(taskName);
+            if (!(task instanceof CompositeTask)) {
+                return "Task is not a CompositeTask: " + taskName;
+            }
+
+            CompositeTask compositeTask = (CompositeTask) task;
+            List<String> subTasks = compositeTask.getPrerequisites();
+
+            // Check if any subtask is a prerequisite for other tasks
+            for (String subtask : subTasks) {
+                for (TMS otherTask : taskMap.values()) {
+                    if (otherTask.getPrerequisites() != null && otherTask.getPrerequisites().contains(subtask) && !otherTask.getName().equals(taskName)) {
+                        return "Cannot delete: Subtask " + subtask + " is a prerequisite for another task";
                     }
                 }
-                taskMap.remove(name);
-                return "Composite task deleted: " + name;
             }
+
+            // Delete the composite task and its subtasks
+            for (String subtask : subTasks) {
+                taskMap.remove(subtask);
+            }
+            taskMap.remove(taskName);
+            return "Composite task and its sub-tasks deleted: " + taskName;
+        } else {
+            return "Task not found: " + taskName;
         }
-        return "Task not found: " + name;
     }
+
     /**
      * Modifies a CompositeTask based on the provided instruction.
      * This method expects an instruction string and a Map that stores existing tasks. Its main
      * function is to modify an existing task.
      *
-     * @param instruction A string representing the entire user input that dictates how the task should be modified.
-     * @param taskMap A map that stores the user's tasks, mapped by their names. The task to be modified should be present in this map.
+     * @param instruction contains string representation of entire user input that dictates how the task should be modified.
+     * @param taskMap contains a map that stores the user's tasks, mapped by their names. The task to be modified should be present in this map.
      */
+    @Override
     public void changeTask (String instruction, Map<String,TMS>taskMap) {
         String[] tokens = instruction.split(" ");
         String name = tokens[1];
@@ -126,8 +140,9 @@ public class CompositeTask extends TMS implements Serializable {
      * This method expects an instruction string and a Map that stores tasks
      * It will format and print all the tasks currently found in the system
      *
-     * @param instruction A string representing the entire user input containing the required task name
-     * @param taskMap the taskMap that stores the user information*/
+     * @param instruction contains string representation of entire user input containing the required task name
+     * @param taskMap contains map that stores the user information*/
+    @Override
     public void printTask(String instruction, Map<String, TMS> taskMap) {
         String[] tokens = instruction.split(" ");
         if (tokens.length >= 2) {
@@ -149,15 +164,16 @@ public class CompositeTask extends TMS implements Serializable {
      * This method expects an instruction string and a Map that stores tasks
      * It will calculate the time required to finish a task
      *
-     * @param taskName A string representing the entire user input
-     * @param taskMap the taskMap that stores the user information
-     * @return duration a double variable that reports the duration of the task*/
+     * @param taskName contains string representation of entire user input
+     * @param taskMap contains a map that stores the user information
+     * @return Double representation of duration that reports the duration of the task*/
+    @Override
     public double reportDuration(String taskName, Map<String, TMS> taskMap) {
         if (taskMap.containsKey(taskName)) {
             TMS task = taskMap.get(taskName);
-            if (task instanceof PrimitiveTask) {
+            if (isPrimitive(taskName, taskMap)) {
                 return ((PrimitiveTask) task).getDuration();
-            } else if (task instanceof CompositeTask) {
+            } else if (!isPrimitive(taskName, taskMap)) {
                 double duration = 0;
                 for (String subtaskName : task.getPrerequisites()) {
                     TMS subtask = taskMap.get(subtaskName);
@@ -170,17 +186,24 @@ public class CompositeTask extends TMS implements Serializable {
         return 0;
     }
 
+    /**Defined Function: Method to calculate and report the earliest finish time for a given task
+     *                   in a map of tasks.
+     * Common function - for Primitive and Composite tasks.
+     *
+     * @param taskName contains string representation of task name
+     * @param taskMap contains a map that stores the user information
+     * @return Double representation of earliest finish time for given tasks*/
     public double reportEarliestFinishTime(String taskName, Map<String, TMS> taskMap) {
         double earliestFinishTime = 0.0;
         TMS task = taskMap.get(taskName);
 
-        if (task instanceof CompositeTask) {
+        if (!isPrimitive(taskName, taskMap)) {
             CompositeTask compositeTask = (CompositeTask) task;
             for (String subtaskName : compositeTask.getPrerequisites()) {
                 double subtaskFinishTime = compositeTask.reportEarliestFinishTime(subtaskName, taskMap);
                 earliestFinishTime = Math.max(earliestFinishTime, subtaskFinishTime);
             }
-        } else if (task instanceof PrimitiveTask) {
+        } else if (isPrimitive(taskName, taskMap)) {
             earliestFinishTime = task.getDuration();
         }
 

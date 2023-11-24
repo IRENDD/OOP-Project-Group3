@@ -1,10 +1,6 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
-import hk.edu.polyu.comp.comp2021.tms.Application;
-import hk.edu.polyu.comp.comp2021.tms.Application.*;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 import java.lang.String;
 import java.util.Map;
 
@@ -24,17 +20,18 @@ public class PrimitiveTask extends TMS implements Serializable {
     }
 
     /** Constructors for the composite task
-     *@param name contains the name of the Primitive Task
+     * @param name contains the name of the Primitive Task
      * @param description contains the description of the task
      * @param duration contains the time needed to complete the task*/
     public PrimitiveTask(String name, String description, double duration){
         super (name, description, duration);
     }
 
-    /**Method to create a Primitive Task
-    * This method expects an instruction string and a Map that stores tasks
-     * @param instruction A string representing the entire user input
-     * @param taskMap the taskMap that stores the user information*/
+    /** Method to create a Primitive Task
+     * This method expects an instruction string and a Map that stores tasks
+     * @param instruction contains a string representation of entire user input
+     * @param taskMap contains a map that stores the user information*/
+    @Override
     public void create(String instruction, Map <String, TMS> taskMap) {
         // Method to create an object of the primitive task
         String[] tokens = instruction.split(" ");
@@ -55,20 +52,33 @@ public class PrimitiveTask extends TMS implements Serializable {
             System.out.println("Invalid CreateSimpleTask command format.");
         }
     }
-    /**Method to delete a Primitve Task
+
+    /**Method to delete a Primitive Task
      * This method expects an instruction string and a Map that stores tasks
-     * @param instruction A string representing the entire user input
-     * @param taskMap the taskMap that stores the user information
-     * @return Name of deleted task*/
+     * @param instruction contains a string representation of entire user input
+     * @param taskMap contains a map that stores the user information
+     * @return String representation of the deleted task name */
+    @Override
     public String delete (String instruction, Map <String, TMS> taskMap) {
-        // add code
         String[] tokens = instruction.split(" ");
-        String name = tokens[1];
-        if (taskMap.containsKey(name)) {
-            taskMap.remove(name);
-            return "Task deleted: " + name;
+        String taskName = tokens[1];
+
+        // Check if the task is a prerequisite for any other task
+        for (TMS task : taskMap.values()) {
+            if (task instanceof CompositeTask) {
+                CompositeTask compositeTask = (CompositeTask) task;
+                if (compositeTask.getPrerequisites().contains(taskName)) {
+                    return "Cannot delete! "+  taskName +" is a subtask of a CompositeTask: " + compositeTask.getName();
+                }
+            }
         }
-        return "Task not found: " + name;
+        // If the task is neither a prerequisite nor a part of a composite task, delete it
+        if (taskMap.containsKey(taskName)) {
+            taskMap.remove(taskName);
+            return "Task deleted: " + taskName;
+        } else {
+            return "Task not found: " + taskName;
+        }
     }
 
     /**
@@ -76,9 +86,10 @@ public class PrimitiveTask extends TMS implements Serializable {
      * This method expects an instruction string and a Map that stores existing tasks. Its main
      * function is to modify an existing task.
      *
-     * @param instruction A string representing the entire user input that dictates how the task should be modified.
-     * @param taskMap A map that stores the user's tasks, mapped by their names. The task to be modified should be present in this map.
+     * @param instruction contains string representation of the entire user input that dictates how the task should be modified.
+     * @param taskMap contains a map that stores the user's tasks, mapped by their names. The task to be modified should be present in this map.
      */
+    @Override
     public void changeTask (String instruction, Map<String, TMS> taskMap) {
         String[] tokens = instruction.split(" ");
         String name = tokens[1];
@@ -106,12 +117,14 @@ public class PrimitiveTask extends TMS implements Serializable {
             System.out.println("Task not found: " + name);
         }
     }
+
     /**Method to print a Primitive task
      * This method expects an instruction string and a Map that stores tasks
      * It will format and print all the tasks currently found in the system
      *
-     * @param instruction A string representing the entire user input containing the required task name
-     * @param taskMap the taskMap that stores the user information*/
+     * @param instruction contains string representation of entire user input containing the required task name
+     * @param taskMap contains a map that stores the user information*/
+    @Override
     public void printTask(String instruction, Map<String, TMS> taskMap) {
         String[] tokens = instruction.split(" ");
         if (tokens.length >= 2) {
@@ -135,13 +148,15 @@ public class PrimitiveTask extends TMS implements Serializable {
      * This method expects an instruction string and a Map that stores tasks
      * It will calculate the time required to finish a task
      *
-     * @param taskName A string representing the entire user input
-     * @param taskMap the taskMap that stores the user information
-     * @return duration a double variable that reports the duration of the task*/
+     * @param taskName contains string representation of the entire user input
+     * @param taskMap contains a map that stores the user information
+     * @return Double representation of variable that reports the duration of the task*/
+    @Override
     public double reportDuration(String taskName, Map<String, TMS> taskMap) {
         if (taskMap.containsKey(taskName)) {
             TMS task = taskMap.get(taskName);
-            if (task instanceof PrimitiveTask) {
+
+            if (isPrimitive(taskName, taskMap)) {
                 return ((PrimitiveTask) task).getDuration();
             } else if (task instanceof CompositeTask) {
                 double duration = 0;

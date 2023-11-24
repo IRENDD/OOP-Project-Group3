@@ -4,13 +4,32 @@ import hk.edu.polyu.comp.comp2021.tms.model.*;
 import hk.edu.polyu.comp.comp2021.tms.utilities.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+
+/**
+ * Class that represents the main entry point for the Task Management System (TMS) application,
+ * providing functionality for creating, managing, and interacting with tasks and criteria.
+ * Users can execute various operations such as creating tasks, defining criteria, searching, and more.
+ * Additionally, users can save and load preset up files with maps of tasks and criteria.
+ */
 
 public class Application {
+
+    /** A map to store tasks, both primitive and composite, using their names as keys. */
     protected static Map<String, TMS> taskMap = new HashMap<>(); // initializing storage choice
 
+    /** A map to store criteria using their names as keys. */
     protected static Map<String, Criterion> criterionMap = new HashMap<>(); // HashMap for criterion
 
+    /**
+     * The main method that represents the main entry point for the Task Management System (TMS) application.
+     * @param args Command-line arguments (not used in this application).
+     * @throws IOException checks if input/output exception occurs during file operations.
+     * @throws ClassNotFoundException checks if a class is not found during deserialization.
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         //TMS tms = new TMS();
         PrimitiveTask taskP = new PrimitiveTask();
@@ -19,6 +38,7 @@ public class Application {
         DefineBasicCriterion criteriaBa = new DefineBasicCriterion();
         DefineBinaryCriterion criteriaBi = new DefineBinaryCriterion();
         DefineNegatedCriterion criteriaNe = new DefineNegatedCriterion();
+
         // Initialize and run the system
         Scanner scanner = new Scanner(System.in);
         introduction();
@@ -32,8 +52,17 @@ public class Application {
             else if (input.startsWith("CreateCompositeTask")) {taskC.create(input, taskMap);}
 
             else if (input.startsWith("DeleteTask")) {
-                String taskName = input.split(" ")[1];
-                System.out.println(taskP.delete("DeleteTask " + taskName, taskMap));
+                String[] inputParts = input.split(" ");
+                if (inputParts.length >= 2) {
+                    String taskName = inputParts[1];
+                    if (taskMap.containsKey(taskName)) {
+                        System.out.println(taskMap.get(taskName).delete("DeleteTask " + taskName, taskMap));
+                    } else {
+                        System.out.println("Invalid. Task does not exist");
+                    }
+                } else {
+                    System.out.println("Invalid command format for DeleteTask. Command : *DeleteTask* *TaskName* ");
+                }
 
             } else if (input.startsWith("ChangeTask")) {
                 String taskName = input.split(" ")[1];
@@ -46,9 +75,9 @@ public class Application {
                     String taskName = inputParts[1];
                     TMS task = taskMap.get(taskName);
                     if (task != null) {
-                        if (task instanceof PrimitiveTask) {
+                        if (task.isPrimitive(task.getName(), taskMap)) {
                             taskP.printTask(input,taskMap);
-                        } else if (task instanceof CompositeTask) {
+                        } else if (!task.isPrimitive(task.getName(), taskMap)) {
                             taskC.printTask(input, taskMap);
                         }
                     } else {
@@ -98,25 +127,14 @@ public class Application {
                 }
                 else {
                     for (Criterion criteria : criterionMap.values()) {
-                        if (criteria instanceof DefineBasicCriterion) {
-                            criteriaBa.printBasicCriterion(criteria.getName(), criterionMap);
-                        } else if (criteria instanceof DefineNegatedCriterion) {
-                            criteriaNe.printNegatedCriterion(criteria.getName(), criterionMap);
-                        } else if (criteria instanceof DefineBinaryCriterion) {
-                            // call the function created here
-                            criteriaBi.printBinaryCriterion(criteria.getName(), criterionMap);
-                        } else {
-                            System.out.println("Invalid Criterion found");
-                        }
+                        criteria.printCriterion(criteria.getName(), criterionMap);
                     }
                 }
             } else if (input.startsWith("Search")) {
                 // call respective function - Ilyas
                 for (Criterion criteria : criterionMap.values()){
                     if (criteria.getName().equals(input.split(" ")[1])){
-                        if (criteria instanceof DefineBasicCriterion) criteriaBa.search(input, taskMap, criterionMap);
-                        else if (criteria instanceof DefineNegatedCriterion) criteriaNe.search(input, taskMap, criterionMap);
-                        else{criteriaBi.search(input, taskMap, criterionMap);}
+                        criteria.search(input, taskMap, criterionMap);
                     }
                     //else {System.out.println ("Criterion with name "+input.split(" ")[1]+ " does not exist");}
                 }
@@ -152,21 +170,25 @@ public class Application {
         scanner.close();
     }
 
-/* This is the end of the Main application. Below are functions used to re-generate parts of the interface*/
+    /* This is the end of the Main application. Below are functions used to re-generate parts of the interface*/
 
+    /**
+     * Prints information about all the tasks stored in the task map.
+     * If no tasks are in map, a message indicating it will be displayed.
+     */
 
     public static void printAllTasks() {
         if (taskMap.isEmpty()) {
             System.out.println("No tasks available.");
         } else {
             for (TMS task : taskMap.values()) {
-                if (task instanceof PrimitiveTask) {
+                if (task.isPrimitive(task.getName(), taskMap)) {
                     PrimitiveTask primitiveTask = (PrimitiveTask) task;
                     System.out.println("Task Name: " + primitiveTask.getName());
                     System.out.println("Description: " + primitiveTask.getDescription());
                     System.out.println("Duration: " + primitiveTask.getDuration());
                     System.out.println();
-                } else if (task instanceof CompositeTask) {
+                } else if (!task.isPrimitive(task.getName(), taskMap)) {
                     CompositeTask compositeTask = (CompositeTask) task;
                     System.out.println("Task Name: " + compositeTask.getName());
                     System.out.println("Description: " + compositeTask.getDescription());
@@ -176,6 +198,14 @@ public class Application {
             }
         }
     }
+
+    /**
+     * Method provides assistance and additional information related to the Task Management System (TMS)
+     * application. It guides the user through different options, including understanding the system,
+     * learning command syntax, and contacting the developers for support. The method uses a
+     * console-based interaction to gather user input and respond accordingly, offering information
+     * about the system, command syntax, and developer contact details.
+     */
     public static void helper (){
         Scanner scanner = new Scanner(System.in);
         System.out.println ("Thank you for using the help service.\n");
@@ -247,6 +277,14 @@ public class Application {
             System.out.println ("Please reach out to the developers using the contact information provided.\n\n");
         }
     }
+
+    /**
+     * Method displays an introductory message for the Task Management System (TMS) application.
+     * It provides an overview of the available functions and commands in the system,
+     * categorizing them into user control functions, task commands, and criterion commands.
+     * The method serves as an initial guide for users interacting with the TMS application,
+     * outlining the functionalities and commands they can use.
+     */
     public static void introduction (){
         System.out.println ("\t\tTASK MANAGEMENT SYSTEM\n");
         System.out.println ("Available Functions:");

@@ -1,14 +1,12 @@
 package hk.edu.polyu.comp.comp2021.tms.utilities;
-import hk.edu.polyu.comp.comp2021.tms.Application;
-import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
+import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 /**
- * Class used to create Basic Criterias. It inherits from the abstract class Criteria
+ * Class used to create Basic Criteria. It inherits from the abstract class Criteria
  * The class also implements the Serializable interface which is used
  * for saving and loading its contents to a file.
  */
@@ -32,7 +30,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
     }
 
     /** Constructor for the Basic Criterion
-     * @param name contains the name of the DefineBasicCriterion Task
+     * @param name contains the name of the basic criterion
      * @param property contains the property of the criterion
      * @param op contains the operator of the criterion
      * @param val contains the string value needed to the criterion*/
@@ -50,7 +48,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
 
     /**Method to create a Basic Criterion
      * This method expects an instruction string and a Map
-     * that stores criterias to create Basic criteria
+     * that stores criteria to create Basic criteria
      *
      * @param instruction A string representing the entire user input
      * @param criterionMap stores the user's criterion information*/
@@ -103,9 +101,9 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
     }
 
 
-    /**Method to search Tasks based on Basic Criterias
+    /**Method to search Tasks based on Basic Criteria
      * This method expects an instruction string, a Map that stores tasks,
-     * and another Map that stores criterias in order to search tasks based on the given criterias
+     * and another Map that stores criteria in order to search tasks based on the given criteria
      *
      * @param instruction A string representing the entire user input
      * @param taskMap A map that stores the user's tasks, mapped by their names.
@@ -155,12 +153,13 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
     }
 
     /**Method to print a Basic criterion
-     * This method expects an instruction string and a Map that stores criterias
+     * This method expects an instruction string and a Map that stores criteria
      * It will format and print all the tasks currently found in the system
      *
      * @param name A string representing criterion name
      * @param criterionMap stores the user's criterion information*/
-    public void printBasicCriterion(String name, Map<String,Criterion>criterionMap){
+    @Override
+    public void printCriterion(String name, Map<String,Criterion>criterionMap){
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);
             System.out.println("Task Name: " + criterion.getName());

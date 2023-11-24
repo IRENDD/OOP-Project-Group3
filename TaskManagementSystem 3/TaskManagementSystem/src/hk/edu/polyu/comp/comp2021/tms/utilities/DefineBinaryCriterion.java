@@ -1,14 +1,12 @@
 package hk.edu.polyu.comp.comp2021.tms.utilities;
 
-import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Class used to create Binary Criterias. It inherits from the abstract class Criteria
+ * Class used to create Binary Criteria. It inherits from the abstract class Criteria
  * The class also implements the Serializable interface which is used
  * for saving and loading its contents to a file.
  */
@@ -22,13 +20,13 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
     /** Constructor for the Binary Criterion
      *@param name contains the name of the basic criterion
      * @param criterion contains the first criterion
-     * @param criterion2 contains the logical operator for the two criterias
+     * @param criterion2 contains the logical operator for the two criteria
      * @param op contains the second criterion*/
     public DefineBinaryCriterion(String name, Criterion criterion, String op, Criterion criterion2){ super(name, criterion, op, criterion2); }
 
     /**Method to create a Binary Criterion
      * This method expects an instruction string and a Map
-     * that stores criterias to create Binary criteria
+     * that stores criteria to create Binary criteria
      *
      * @param instruction A string representing the entire user input
      * @param criterionMap stores the user's criterion information*/
@@ -69,9 +67,9 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
         System.out.println("Binary criteria of " + name2 + " and " + name3 + " created: " + name);
     }
 
-    /**Method to search Tasks based on Binary Criterias
+    /**Method to search Tasks based on Binary Criteria
      * This method expects an instruction string, a Map that stores tasks,
-     * and another Map that stores criterias in order to search tasks based on the given criterias
+     * and another Map that stores criteria in order to search tasks based on the given criteria
      *
      * @param instruction A string representing the entire user input
      * @param taskMap A map that stores the user's tasks, mapped by their names.
@@ -141,12 +139,13 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
     }
 
     /**Method to print a Binary criterion
-     * This method expects an instruction string and a Map that stores criterias
+     * This method expects an instruction string and a Map that stores criteria
      * It will format and print all the tasks currently found in the system
      *
      * @param name A string representing criterion name
      * @param criterionMap stores the user's criterion information*/
-    public void printBinaryCriterion(String name, Map<String,Criterion>criterionMap){
+    @Override
+    public void printCriterion(String name, Map<String,Criterion>criterionMap){
         if(criterionMap.containsKey(name)){
             DefineBinaryCriterion criterion = (DefineBinaryCriterion) criterionMap.get(name);
             Criterion criterion1 = (Criterion) criterion.getCriterion();
