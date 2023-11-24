@@ -7,6 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Class used to create Negated Criterias. It inherits from the abstract class Criteria
+ * The class also implements the Serializable interface which is used
+ * for saving and loading its contents to a file.
+ */
 public class DefineNegatedCriterion extends Criterion implements Serializable {
     public DefineNegatedCriterion(){ super(); }
     public DefineNegatedCriterion(String name, String property, String op, double val) {
@@ -19,6 +24,12 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
         super(name, property, op, val);
     }
 
+    /**Method to create a Negated Criterion
+     * This method expects an instruction string and a Map
+     * that stores criterias to create Negated criteria
+     *
+     * @param instruction A string representing the entire user input
+     * @param criterionMap stores the user's criterion information*/
     @Override
     public void create(String instruction, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
@@ -90,6 +101,14 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
         System.out.println("Negative criteria of " + name2 + " created: " + name);
     }
 
+    /**Method to search a Tasks based on Negated Criterias
+     * This method expects an instruction string, a Map that stores tasks,
+     * and another Map that stores criterias in order to search tasks based on the given criterias
+     *
+     * @param instruction A string representing the entire user input
+     * @param taskMap A map that stores the user's tasks, mapped by their names.
+     * The task to be modified should be present in this map.
+     * @param criterionMap stores the user's criterion information */
     @Override
     public void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
@@ -131,6 +150,13 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
             }
         }
     }
+
+    /**Method to print a Negated criterion
+     * This method expects an instruction string and a Map that stores criterias
+     * It will format and print all the tasks currently found in the system
+     *
+     * @param name A string representing criterion name
+     * @param criterionMap stores the user's criterion information*/
     public void printNegatedCriterion(String name, Map<String,Criterion>criterionMap){
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);

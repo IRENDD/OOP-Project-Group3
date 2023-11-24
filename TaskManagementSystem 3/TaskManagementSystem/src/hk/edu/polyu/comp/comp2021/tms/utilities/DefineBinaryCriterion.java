@@ -7,6 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Class used to create Binary Criterias. It inherits from the abstract class Criteria
+ * The class also implements the Serializable interface which is used
+ * for saving and loading its contents to a file.
+ */
 public class DefineBinaryCriterion extends Criterion implements Serializable {
     /**
      * Default constructor for the DefineBinaryCriterion class. <p>
@@ -21,6 +26,12 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
      * @param op contains the second criterion*/
     public DefineBinaryCriterion(String name, Criterion criterion, String op, Criterion criterion2){ super(name, criterion, op, criterion2); }
 
+    /**Method to create a Binary Criterion
+     * This method expects an instruction string and a Map
+     * that stores criterias to create Binary criteria
+     *
+     * @param instruction A string representing the entire user input
+     * @param criterionMap stores the user's criterion information*/
     @Override
     public void create(String instruction, Map <String, Criterion> criterionMap){
         String[] tokens = instruction.split(" ");
@@ -58,6 +69,14 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
         System.out.println("Binary criteria of " + name2 + " and " + name3 + " created: " + name);
     }
 
+    /**Method to search Tasks based on Binary Criterias
+     * This method expects an instruction string, a Map that stores tasks,
+     * and another Map that stores criterias in order to search tasks based on the given criterias
+     *
+     * @param instruction A string representing the entire user input
+     * @param taskMap A map that stores the user's tasks, mapped by their names.
+     * The task to be modified should be present in this map.
+     * @param criterionMap stores the user's criterion information */
     @Override
     public void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap) {
         String[] tokens = instruction.split(" ");
@@ -120,6 +139,13 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
             }
         }
     }
+
+    /**Method to print a Binary criterion
+     * This method expects an instruction string and a Map that stores criterias
+     * It will format and print all the tasks currently found in the system
+     *
+     * @param name A string representing criterion name
+     * @param criterionMap stores the user's criterion information*/
     public void printBinaryCriterion(String name, Map<String,Criterion>criterionMap){
         if(criterionMap.containsKey(name)){
             DefineBinaryCriterion criterion = (DefineBinaryCriterion) criterionMap.get(name);

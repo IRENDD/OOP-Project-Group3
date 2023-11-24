@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+/**
+ * Class used to create Basic Criterias. It inherits from the abstract class Criteria
+ * The class also implements the Serializable interface which is used
+ * for saving and loading its contents to a file.
+ */
 public class DefineBasicCriterion extends Criterion implements Serializable {
 
     /**
@@ -18,33 +23,35 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
     }
 
     /** Constructor for the Basic Criterion
-     *@param name contains the name of the basic criterion
+     * @param name contains the name of the basic criterion
      * @param property contains the property of the criterion
      * @param op contains the operator of the criterion
-     * @param val contains the value with the type of string needed to the criterion*/
+     * @param val contains the double value needed to the criterion*/
     public DefineBasicCriterion(String name, String property, String op, double val) {
         super(name, property, op, val);
     }
 
     /** Constructor for the Basic Criterion
-     *@param name contains the name of the DefineBasicCriterion Task
+     * @param name contains the name of the DefineBasicCriterion Task
      * @param property contains the property of the criterion
      * @param op contains the operator of the criterion
-     * @param val contains the value with the type of string needed to the criterion*/
+     * @param val contains the string value needed to the criterion*/
     public DefineBasicCriterion(String name, String property, String op, String val) {
         super(name, property, op, val);
     }
 
     /** Constructor for the Basic Criterion
-     *@param name contains the name of the basic criterion
+     * @param name contains the name of the basic criterion
      * @param property contains the property of the criterion
      * @param op contains the operator of the criterion
-     * @param val contains the value with the list of string needed to the criterion*/
+     * @param val contains the list of string value needed to the criterion*/
     public DefineBasicCriterion(String name, String property, String op, String[] val) { super(name, property, op, val); }
 
 
     /**Method to create a Basic Criterion
-     * This method expects an instruction string and a Map that stores criterias
+     * This method expects an instruction string and a Map
+     * that stores criterias to create Basic criteria
+     *
      * @param instruction A string representing the entire user input
      * @param criterionMap stores the user's criterion information*/
     @Override
@@ -96,10 +103,13 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
     }
 
 
-    /**Method to create a Basic Criterion
-     * This method expects an instruction string, a Map that stores tasks, and another Map that stores criterias
+    /**Method to search Tasks based on Basic Criterias
+     * This method expects an instruction string, a Map that stores tasks,
+     * and another Map that stores criterias in order to search tasks based on the given criterias
+     *
      * @param instruction A string representing the entire user input
-     * @param taskMap A map that stores the user's tasks, mapped by their names. The task to be modified should be present in this map.
+     * @param taskMap A map that stores the user's tasks, mapped by their names.
+     * The task to be modified should be present in this map.
      * @param criterionMap stores the user's criterion information */
     @Override
     public void search(String instruction, Map<String, TMS> taskMap, Map <String, Criterion> criterionMap){
