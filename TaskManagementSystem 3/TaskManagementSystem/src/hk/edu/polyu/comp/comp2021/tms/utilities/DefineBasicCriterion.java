@@ -2,11 +2,12 @@ package hk.edu.polyu.comp.comp2021.tms.utilities;
 import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-public class DefineBasicCriterion extends Criterion {
+public class DefineBasicCriterion extends Criterion implements Serializable {
     public DefineBasicCriterion(){
         super();
     }
@@ -116,11 +117,11 @@ public class DefineBasicCriterion extends Criterion {
             System.out.println("Property: " + criterion.getProperty());
             System.out.println("Operator: " + criterion.getOp());
             if(criterion.getValStr() != null){
-                System.out.println("Value: " + criterion.getValStr());
+                System.out.println("Value: " + criterion.getValStr() + "\n");
             } else if(criterion.getValList() != null){
-                System.out.println("Value: " + String.join(", ", criterion.getValList()));
+                System.out.println("Value: " + String.join(", ", criterion.getValList()) + "\n");
             } else{
-                System.out.println("Value: " + criterion.getVal());
+                System.out.println("Value: " + criterion.getVal() + "\n");
             }
         }
     }

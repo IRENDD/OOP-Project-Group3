@@ -93,18 +93,22 @@ public class Application {
 
             } else if (input.startsWith("PrintAllCriteria")) {
                 // call respective function - Ilyas
-                for ( Criterion criteria : criterionMap.values()){
-                    if (criteria instanceof DefineBasicCriterion){
-                        criteriaBa.printBasicCriterion(criteria.getName(), criterionMap);
+                if (criterionMap.isEmpty()){
+                    System.out.println ("There are no criteria defined.");
+                }
+                else {
+                    for (Criterion criteria : criterionMap.values()) {
+                        if (criteria instanceof DefineBasicCriterion) {
+                            criteriaBa.printBasicCriterion(criteria.getName(), criterionMap);
+                        } else if (criteria instanceof DefineNegatedCriterion) {
+                            criteriaNe.printNegatedCriterion(criteria.getName(), criterionMap);
+                        } else if (criteria instanceof DefineBinaryCriterion) {
+                            // call the function created here
+                            criteriaBi.printBinaryCriterion(criteria.getName(), criterionMap);
+                        } else {
+                            System.out.println("Invalid Criterion found");
+                        }
                     }
-                    else if (criteria instanceof DefineNegatedCriterion){
-                        criteriaNe.printNegatedCriterion(criteria.getName(), criterionMap);
-                    }
-                    else if (criteria instanceof DefineBinaryCriterion){
-                        // call the function created here
-                        criteriaBi.printBinaryCriterion(criteria.getName(), criterionMap);
-                    }
-                    else {System.out.println ("Invalid Criterion found");}
                 }
             } else if (input.startsWith("Search")) {
                 // call respective function - Ilyas

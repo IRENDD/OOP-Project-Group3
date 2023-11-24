@@ -63,23 +63,50 @@ public class UserControl {
         String[] inputArray = instruction.split(" ");
         if (inputArray.length == 2) {
             try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(inputArray[1]))) {
-                oos.writeObject(taskMap);
-                oos.writeObject(criterionMap);
+                // writing the TMS objects
+                for (TMS task : taskMap.values()){
+                    oos.writeObject (task);
+                }
+                //oos.writeObject(taskMap);
+                // writing the Criterion objects
+                for (Criterion criteria : criterionMap.values()){
+                    oos.writeObject (criteria);
+                }
+                //oos.writeObject(criterionMap);
+                System.out.println ("Files were updated successfully");
             }
-            finally {
-                System.out.println ("All updates have been stored successfully");
-            }
+            catch (FileNotFoundException e) {System.out.println ("The file path was not found. Try again");}
+            catch (NotSerializableException e) {System.out.println ("There is an implementation error.");}
         }
+        else {System.out.println ("Invalid format for Store function");}
     }
 
     public static void loadMap (String instruction, Map<String, TMS> taskMap, Map<String, Criterion> criterionMap) throws IOException, ClassNotFoundException {
         String[] inputArray = instruction.split (" ");
+        Map<String, Object> rawMap = new HashMap<>();
         if (inputArray.length ==2){
-            try (ObjectInputStream ois = new ObjectInputStream (new FileInputStream(inputArray[1]))){
-                taskMap = (HashMap <String, TMS>) ois.readObject();
-                criterionMap = (HashMap <String, Criterion>) ois.readObject();
+            try (ObjectInputStream ois = new ObjectInputStream (new FileInputStream(inputArray[1]))) {
+                while (true) {
+                    Object objectRead = ois.readObject();
+                    rawMap.put(objectRead.toString(), objectRead);
+                }
+            }
+            catch (FileNotFoundException e) {System.out.println ("Specified directory is not found or cannot be accessed.");}
+            catch (EOFException e) {
+                System.out.println ("All lines within file have been read.");
+                for (Object object : rawMap.values()){
+                    if (object instanceof TMS) {
+                        TMS task = (TMS) object;
+                        taskMap.put (task.getName(), task);
+                    }
+                    else if (object instanceof Criterion){
+                        Criterion crt = (Criterion) object;
+                        criterionMap.put (crt.getName(), crt);
+                    }
+                }
             }
         }
+        else {System.out.println ("Invalid Syntax for Load");}
     }
 }
 

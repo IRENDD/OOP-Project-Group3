@@ -3,10 +3,11 @@ package hk.edu.polyu.comp.comp2021.tms.utilities;
 import hk.edu.polyu.comp.comp2021.tms.Application;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class DefineBinaryCriterion extends Criterion{
+public class DefineBinaryCriterion extends Criterion implements Serializable {
     public DefineBinaryCriterion(){ super(); }
     public DefineBinaryCriterion(String name, String name2, String logicOp, String name3){ super(name, name2, logicOp, name3); }
 
@@ -120,7 +121,7 @@ public class DefineBinaryCriterion extends Criterion{
             System.out.println("Name: " + criterion.getName());
             System.out.println("Criteria 1 : " + criterion1.getName());
             System.out.println("Operator: " + criterion.getOp());
-            System.out.println ("Criteria 2: " + criterion2.getName());
+            System.out.println ("Criteria 2: " + criterion2.getName() + "\n");
         }
     }
 }
