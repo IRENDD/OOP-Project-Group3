@@ -97,9 +97,7 @@ public class Application {
             else if (input.startsWith("DefineNegatedCriterion")) { criteriaNe.create(input, criterionMap); }
             else if (input.startsWith("DefineBinaryCriterion")) { criteriaBi.create(input, criterionMap); }
             else if (input.startsWith("PrintAllCriteria")) {
-                for (Criterion criteria : criterionMap.values()) {
-                    criteria.printCriterion(criteria.getName(), criterionMap);
-                }
+                printAllCriteria();
             } else if (input.startsWith("Search")) {
                 for (Criterion criteria : criterionMap.values()) {
                     criteria.search(input, taskMap, criterionMap);
