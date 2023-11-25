@@ -42,9 +42,13 @@ public class CompositeTaskTest {
             fail("Unexpected target exception: " + e.getTargetException().getMessage());
         }
     }
-    /**Initialize variables for the tests below*/
+    /**Initialize task map for the tests below*/
     protected static Map<String, TMS> taskMap = new HashMap<>(); // the taskMap
+
+    /**Initialize primitive task for the tests below*/
     protected PrimitiveTask taskP = new PrimitiveTask(); // empty primitive task
+
+    /**Initialize composite task for the tests below*/
     protected CompositeTask taskC = new CompositeTask(); // empty composite task - for thorough testing
     /**Testing the create function for primitive tasks*/
     @Test

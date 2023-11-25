@@ -78,7 +78,11 @@ public class PrimitiveTaskTest {
     }
     /**Initialize variables for the tests below*/
     protected static Map<String, TMS> taskMap = new HashMap<>(); // the taskMap
+
+    /**Initialize primitive task for the tests below*/
     protected PrimitiveTask taskP = new PrimitiveTask(); // empty primitive task
+
+    /**Initialize composite task for the tests below*/
     protected CompositeTask taskC = new CompositeTask(); // empty composite task - for thorough testing
 
     /**Testing the create function for primitive tasks*/
@@ -135,7 +139,7 @@ public class PrimitiveTaskTest {
         taskP.create(instruction1, taskMap);
         taskP.create(instruction2, taskMap);
         taskC.reportDuration (taskName2, taskMap);
-        assertEquals(0.5, taskP.reportDuration (taskName, taskMap));
+        assertEquals(Double.parseDouble("0.5"), taskP.reportDuration (taskName, taskMap));
     }
     /**Testing the delete function for primitive task*/
     @Test

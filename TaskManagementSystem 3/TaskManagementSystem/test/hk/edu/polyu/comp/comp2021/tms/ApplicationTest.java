@@ -14,6 +14,8 @@ import java.util.Map;
 
 /** This class is to test some of the basic functions found in application*/
 public class ApplicationTest {
+
+    /** Testing the printing features for the interface*/
     protected static Map<String, TMS> taskMap = new HashMap<>(); // the taskMap
     protected PrimitiveTask taskP = new PrimitiveTask(); // empty primitive task
     protected CompositeTask taskC = new CompositeTask(); // empty composite task - for thorough testing

@@ -178,7 +178,8 @@ public class Application {
         System.out.println ("Your question? [1/2/3]: ");
         String choice = scanner.nextLine();
         if (choice.startsWith("1")){
-            // describing the system
+            System.out.println("This is group 3's command line based task management system\n " +
+                    "It was made for subject called COMP2021 Object-Oriented Programming course");
         }
         else if (choice.startsWith("2")){
             // new case statement with all the commands

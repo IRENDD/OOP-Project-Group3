@@ -37,9 +37,9 @@ public class DefineBinaryCriterionTest {
     /**Initialize criterion map*/
     protected static Map<String, Criterion> criterionMap = new HashMap<>(); // HashMap for criteria
     /**double for testing*/
-    protected double x = 40.0;
+    protected double x = Double.parseDouble("40");
     /**double for testing*/
-    protected double y = 95.0;
+    protected double y = Double.parseDouble("95");
 
     /**When valid inputs are passed for creation*/
     @Test
@@ -179,6 +179,8 @@ public class DefineBinaryCriterionTest {
         // This should print Task1 and Task2
         binaryCriterion.search("search binary1", taskMap, criterionMap);
     }
+
+    /**For the test print function to check both tasks and criteria*/
     @Test
     public void testPrint() {
 

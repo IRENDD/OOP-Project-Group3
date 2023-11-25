@@ -6,6 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Class to test the criterion. Compares the exception thrown with the expected exceptions
+ */
 public class CriterionTest {
     /**
      * Method to test the class. Compares the exception thrown with the expected exceptions
