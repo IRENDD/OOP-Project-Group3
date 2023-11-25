@@ -158,14 +158,6 @@ public class PrimitiveTask extends TMS implements Serializable {
 
             if (isPrimitive(taskName, taskMap)) {
                 return ((PrimitiveTask) task).getDuration();
-            } else if (task instanceof CompositeTask) {
-                double duration = 0;
-                for (String subtaskName : task.getPrerequisites()) {
-                    TMS subtask = taskMap.get(subtaskName);
-                    duration += reportDuration(subtaskName, taskMap);
-                }
-                duration += task.getDuration();
-                return duration;
             }
         }
         return 0;

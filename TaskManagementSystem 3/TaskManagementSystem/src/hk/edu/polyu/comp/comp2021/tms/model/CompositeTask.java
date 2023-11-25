@@ -38,7 +38,7 @@ public class CompositeTask extends TMS implements Serializable {
     public void create(String instruction, Map<String,TMS>taskMap) {
         // add code
         String[] tokens = instruction.split(" ");
-        if (tokens.length >= 4) {
+        if (tokens.length >= 4 && isName(tokens[1])) {
             String name = tokens[1];
             String description = tokens[2];
             String[] subtaskNames = tokens[3].split(",");
@@ -145,7 +145,7 @@ public class CompositeTask extends TMS implements Serializable {
     @Override
     public void printTask(String instruction, Map<String, TMS> taskMap) {
         String[] tokens = instruction.split(" ");
-        if (tokens.length >= 2) {
+        if (tokens.length >= 2 && isName(tokens[1])) {
             String taskName = tokens[1];
             TMS task = taskMap.get(taskName);
             if (task instanceof CompositeTask) {
