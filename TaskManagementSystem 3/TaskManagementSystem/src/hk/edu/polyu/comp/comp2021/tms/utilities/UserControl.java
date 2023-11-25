@@ -56,12 +56,12 @@ public class UserControl {
                 criterionMap.putAll((Map<String, Criterion>) ois.readObject());
                 System.out.println("All lines within file have been read.");
             } catch (FileNotFoundException e) {
-                System.out.println("Specified directory is not found or cannot be accessed.");
+                throw new FileNotFoundException("Specified directory is not found or cannot be accessed.");
             } catch (EOFException e) {
-                System.out.println("End of file reached.");
+                throw new EOFException("End of file reached.");
             }
         } else {
-            System.out.println("Invalid Syntax for Load");
+            throw new IllegalArgumentException("Invalid Syntax for Load");
         }
     }
 }
