@@ -101,7 +101,9 @@ public class Application {
                     criteria.printCriterion(criteria.getName(), criterionMap);
                 }
             } else if (input.startsWith("Search")) {
-                printAllCriteria();
+                for (Criterion criteria : criterionMap.values()) {
+                    criteria.search(input, taskMap, criterionMap);
+                }
             }
             else if (input.startsWith("Store")) { UserControl.saveMap (input,taskMap, criterionMap); }
             else if (input.startsWith("Load")) { UserControl.loadMap (input,taskMap, criterionMap); }
