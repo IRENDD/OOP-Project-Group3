@@ -63,6 +63,13 @@ public class PrimitiveTask extends TMS implements Serializable {
         String[] tokens = instruction.split(" ");
         String taskName = tokens[1];
 
+        if(tokens.length != 2){
+            return "Invalid command format for DeleteTask. Command : *DeleteTask* *TaskName* ";
+        }
+        if(!taskMap.containsKey(taskName)){
+            return "Invalid. Task does not exist";
+        }
+
         // Check if the task is a prerequisite for any other task
         for (TMS task : taskMap.values()) {
             if (task instanceof CompositeTask) {
@@ -158,6 +165,14 @@ public class PrimitiveTask extends TMS implements Serializable {
 
             if (isPrimitive(taskName, taskMap)) {
                 return ((PrimitiveTask) task).getDuration();
+            } else if (task instanceof CompositeTask) {
+                double duration = 0;
+                for (String subtaskName : task.getPrerequisites()) {
+                    TMS subtask = taskMap.get(subtaskName);
+                    duration += reportDuration(subtaskName, taskMap);
+                }
+                duration += task.getDuration();
+                return duration;
             }
         }
         return 0;

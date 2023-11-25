@@ -146,6 +146,10 @@ public class DefineBinaryCriterion extends Criterion implements Serializable {
      * @param criterionMap stores the user's criterion information*/
     @Override
     public void printCriterion(String name, Map<String,Criterion>criterionMap){
+        if (criterionMap.isEmpty()){
+            System.out.println ("There are no criteria defined.");
+            return;
+        }
         if(criterionMap.containsKey(name)){
             DefineBinaryCriterion criterion = (DefineBinaryCriterion) criterionMap.get(name);
             Criterion criterion1 = (Criterion) criterion.getCriterion();

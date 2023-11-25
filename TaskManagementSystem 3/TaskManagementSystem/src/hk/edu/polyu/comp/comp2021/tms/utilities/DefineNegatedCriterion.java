@@ -179,6 +179,10 @@ public class DefineNegatedCriterion extends Criterion implements Serializable {
      * @param criterionMap stores the user's criterion information*/
     @Override
     public void printCriterion(String name, Map<String,Criterion>criterionMap){
+        if (criterionMap.isEmpty()){
+            System.out.println ("There are no criteria defined.");
+            return;
+        }
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);
             System.out.println("Task Name: " + criterion.getName());

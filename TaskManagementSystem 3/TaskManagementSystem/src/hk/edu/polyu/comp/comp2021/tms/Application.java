@@ -48,46 +48,29 @@ public class Application {
             String input = scanner.nextLine();
 
             if (input.startsWith("CreatePrimitiveTask")) {taskP.create(input,taskMap);}
-
             else if (input.startsWith("CreateCompositeTask")) {taskC.create(input, taskMap);}
 
             else if (input.startsWith("DeleteTask")) {
                 String[] inputParts = input.split(" ");
-                if (inputParts.length >= 2) {
-                    String taskName = inputParts[1];
-                    if (taskMap.containsKey(taskName)) {
-                        System.out.println(taskMap.get(taskName).delete("DeleteTask " + taskName, taskMap));
-                    } else {
-                        System.out.println("Invalid. Task does not exist");
-                    }
-                } else {
-                    System.out.println("Invalid command format for DeleteTask. Command : *DeleteTask* *TaskName* ");
-                }
-
-            } else if (input.startsWith("ChangeTask")) {
+                String taskName = inputParts[1];
+                System.out.println(taskMap.get(taskName).delete(input, taskMap));
+            }
+            else if (input.startsWith("ChangeTask")) {
                 String taskName = input.split(" ")[1];
                 taskP.changeTask("ChangeTask " + taskName, taskMap);
                 taskC.changeTask("ChangeTask " + taskName, taskMap);
-
-            } else if (input.startsWith("PrintTask")) {
+            }
+            else if (input.startsWith("PrintTask")) {
                 String[] inputParts = input.split(" ");
-                if (inputParts.length == 2) {
-                    String taskName = inputParts[1];
-                    TMS task = taskMap.get(taskName);
-                    if (task != null) {
-                        if (task.isPrimitive(task.getName(), taskMap)) {
-                            taskP.printTask(input,taskMap);
-                        } else if (!task.isPrimitive(task.getName(), taskMap)) {
-                            taskC.printTask(input, taskMap);
-                        }
-                    } else {
-                        System.out.println(taskName + " Not Found");
-                    }
-                } else {
-                    System.out.println("Invalid input format for PrintTask. Command : \"PrintTask TaskName\" ");
+                String taskName = inputParts[1];
+                TMS task = taskMap.get(taskName);
+                if (task.isPrimitive(task.getName(), taskMap)) {
+                    taskP.printTask(input,taskMap);
+                } else if (!task.isPrimitive(task.getName(), taskMap)) {
+                    taskC.printTask(input, taskMap);
                 }
-
-            } else if (input.startsWith("PrintAllTasks")) {printAllTasks();}
+            }
+            else if (input.startsWith("PrintAllTasks")) { printAllTasks(); }
             else if (input.startsWith("ReportDuration")) {
                 String[] inputParts = input.split (" ");
                 if (inputParts.length >=2 && taskC.isName (inputParts[1])){
@@ -97,54 +80,36 @@ public class Application {
                 }
                 else {System.out.println ("Invalid Command Passed.");}
 
-            } else if (input.startsWith("ReportEarliestFinishTime")) {
+            }
+            else if (input.startsWith("ReportEarliestFinishTime")) {
                 String[] inputParts = input.split (" ");
-                if (inputParts.length >=2 && taskC.isName (inputParts[1])){
+                if (inputParts.length >= 2 && taskC.isName(inputParts[1])){
                     double ans = taskC.reportEarliestFinishTime (inputParts[1],taskMap);
                     if (ans!=0) System.out.println (inputParts[1] + " will take at least "+ans+" time.");
                     else {System.out.println ("The specified task does not exist in the system");}
                 }
                 else {System.out.println ("Invalid Command Passed.");}
-
-            } else if (input.startsWith("DefineBasicCriterion")){ criteriaBa.create (input, criterionMap);
-
-            } else if (input.startsWith("IsPrimitive")) {
-                String[] tokens = input.split(" ");
-                String name = tokens[1].strip();
-                if (taskP.isName(name)) {
-                    if (taskP.isPrimitive(name, taskMap)) System.out.println("Yes");
-                    else System.out.println("No");
-                } else System.out.println("No");
-
-            } else if (input.startsWith("DefineNegatedCriterion")) { criteriaNe.create (input, criterionMap);
-
-            } else if (input.startsWith("DefineBinaryCriterion")) { criteriaBi.create(input, criterionMap);
-
-            } else if (input.startsWith("PrintAllCriteria")) {
-                // call respective function - Ilyas
-                if (criterionMap.isEmpty()){
-                    System.out.println ("There are no criteria defined.");
-                }
-                else {
-                    for (Criterion criteria : criterionMap.values()) {
-                        criteria.printCriterion(criteria.getName(), criterionMap);
-                    }
+            }
+            else if (input.startsWith("DefineBasicCriterion")){ criteriaBa.create (input, criterionMap); }
+            else if (input.startsWith("IsPrimitive")) {
+                System.out.println(taskP.isPrimitive(input.split(" ")[1].strip(), taskMap) ? "Yes" : "No");
+            }
+            else if (input.startsWith("DefineNegatedCriterion")) { criteriaNe.create(input, criterionMap); }
+            else if (input.startsWith("DefineBinaryCriterion")) { criteriaBi.create(input, criterionMap); }
+            else if (input.startsWith("PrintAllCriteria")) {
+                for (Criterion criteria : criterionMap.values()) {
+                    criteria.printCriterion(criteria.getName(), criterionMap);
                 }
             } else if (input.startsWith("Search")) {
-                // call respective function - Ilyas
                 for (Criterion criteria : criterionMap.values()){
                     if (criteria.getName().equals(input.split(" ")[1])){
                         criteria.search(input, taskMap, criterionMap);
                     }
-                    //else {System.out.println ("Criterion with name "+input.split(" ")[1]+ " does not exist");}
                 }
-            } else if (input.startsWith("Store")) {
-                UserControl.saveMap (input,taskMap, criterionMap);
-
-            } else if (input.startsWith("Load")) {
-                UserControl.loadMap (input,taskMap, criterionMap);
-
-            } else if (input.equalsIgnoreCase("Quit")) {
+            }
+            else if (input.startsWith("Store")) { UserControl.saveMap (input,taskMap, criterionMap); }
+            else if (input.startsWith("Load")) { UserControl.loadMap (input,taskMap, criterionMap); }
+            else if (input.equalsIgnoreCase("Quit")) {
                 System.out.println("Thank You for using the System.");
                 System.out.println ("All unsaved changes will be discarded.");
                 System.out.println ("Would you like to proceed? (Y?N)");
@@ -159,14 +124,10 @@ public class Application {
 
             } else if (input.startsWith("Redo")) {
                 // BONUS: call respective function - anyone who's free
-            } else if (input.equalsIgnoreCase("Help")){
-                helper();
-
-            } else {
-                System.out.println("Unknown command.");
             }
+            else if (input.equalsIgnoreCase("Help")){ helper(); }
+            else { System.out.println("Unknown command."); }
         }
-
         scanner.close();
     }
 

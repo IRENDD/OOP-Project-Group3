@@ -38,7 +38,7 @@ public class CompositeTask extends TMS implements Serializable {
     public void create(String instruction, Map<String,TMS>taskMap) {
         // add code
         String[] tokens = instruction.split(" ");
-        if (tokens.length >= 4 && isName(tokens[1])) {
+        if (tokens.length >= 4) {
             String name = tokens[1];
             String description = tokens[2];
             String[] subtaskNames = tokens[3].split(",");
@@ -145,17 +145,21 @@ public class CompositeTask extends TMS implements Serializable {
     @Override
     public void printTask(String instruction, Map<String, TMS> taskMap) {
         String[] tokens = instruction.split(" ");
-        if (tokens.length >= 2 && isName(tokens[1])) {
+        if (tokens.length >= 2) {
             String taskName = tokens[1];
             TMS task = taskMap.get(taskName);
-            if (task instanceof CompositeTask) {
-                CompositeTask compositeTask = (CompositeTask) task;
-                System.out.println("Task Name: " + taskName);
-                System.out.println("Description: " + compositeTask.getDescription());
-                System.out.println("Subtasks: " + String.join(", ", compositeTask.getPrerequisites()));
+            if (taskMap.containsKey(taskName)) {
+                if (task instanceof CompositeTask) {
+                    CompositeTask compositeTask = (CompositeTask) task;
+                    System.out.println("Task Name: " + taskName);
+                    System.out.println("Description: " + compositeTask.getDescription());
+                    System.out.println("Subtasks: " + String.join(", ", compositeTask.getPrerequisites()));
+                } else {
+                    System.out.println("Task Name: " + taskName);
+                    System.out.println("Description: " + task.getDescription());
+                }
             } else {
-                System.out.println("Task Name: " + taskName);
-                System.out.println("Description: " + task.getDescription());
+                System.out.println("Task not found: " + taskName);
             }
         }
     }

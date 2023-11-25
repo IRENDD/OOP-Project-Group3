@@ -74,7 +74,6 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
         switch (property) {
             case "name":
             case "description":
-                if(!op.matches("contains")) return;
                 criteria = new DefineBasicCriterion(name, property, "contains", val.substring(1,val.length()-1));
                 break;
             case "duration":
@@ -90,7 +89,6 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
                     return;
                 }
             case "prerequisites":
-                if(!op.matches("contains")) return;
                 String[] valList = tokens[4].split(",");
                 criteria = new DefineBasicCriterion(name, property, "contains", valList);
                 break;
@@ -162,6 +160,10 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
      * @param criterionMap stores the user's criterion information*/
     @Override
     public void printCriterion(String name, Map<String,Criterion>criterionMap){
+        if (criterionMap.isEmpty()){
+            System.out.println ("There are no criteria defined.");
+            return;
+        }
         if(criterionMap.containsKey(name)){
             Criterion criterion = (Criterion) criterionMap.get(name);
             System.out.println("Task Name: " + criterion.getName());
