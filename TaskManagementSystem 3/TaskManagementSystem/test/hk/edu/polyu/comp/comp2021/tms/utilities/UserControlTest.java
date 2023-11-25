@@ -18,7 +18,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 /**This is a class to test all methods inside the user control class*/
 public class UserControlTest {
-    /**This is the testing function for the save and load functions*/
+    /**This is the testing function for the save and load functions
+     * @throws IOException ioexception
+     * @throws ClassNotFoundException classnotfoundexception*/
     @Test
     public void testSaveAndLoadMap() throws IOException, ClassNotFoundException {
         Map<String, TMS> originalTaskMap = new HashMap<>();
