@@ -74,6 +74,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
         switch (property) {
             case "name":
             case "description":
+                if (!op.matches("contains")) return;
                 criteria = new DefineBasicCriterion(name, property, "contains", val.substring(1,val.length()-1));
                 break;
             case "duration":
@@ -90,6 +91,7 @@ public class DefineBasicCriterion extends Criterion implements Serializable {
                 }
             case "prerequisites":
                 String[] valList = tokens[4].split(",");
+                if (!op.matches("contains")) return;
                 criteria = new DefineBasicCriterion(name, property, "contains", valList);
                 break;
             default:

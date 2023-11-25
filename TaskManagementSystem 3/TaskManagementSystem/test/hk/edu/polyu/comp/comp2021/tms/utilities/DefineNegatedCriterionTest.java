@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**Testing the functions within the DefineNegatedCriterion class*/
 public class DefineNegatedCriterionTest {
     /**This is testing if the no-arg constructor works as intended*/
     @Test
