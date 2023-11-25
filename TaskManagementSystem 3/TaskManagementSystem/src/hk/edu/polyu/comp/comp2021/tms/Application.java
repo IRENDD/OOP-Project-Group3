@@ -101,11 +101,7 @@ public class Application {
                     criteria.printCriterion(criteria.getName(), criterionMap);
                 }
             } else if (input.startsWith("Search")) {
-                for (Criterion criteria : criterionMap.values()){
-                    if (criteria.getName().equals(input.split(" ")[1])){
-                        criteria.search(input, taskMap, criterionMap);
-                    }
-                }
+                printAllCriteria();
             }
             else if (input.startsWith("Store")) { UserControl.saveMap (input,taskMap, criterionMap); }
             else if (input.startsWith("Load")) { UserControl.loadMap (input,taskMap, criterionMap); }
@@ -133,6 +129,20 @@ public class Application {
 
     /* This is the end of the Main application. Below are functions used to re-generate parts of the interface*/
 
+    /**
+     * Prints information about all the criteria stored in the task map.
+     * If no tasks are in map, a message indicating it will be displayed.
+     */
+
+    public static void printAllCriteria() {
+        if (criterionMap.isEmpty()) {
+            System.out.println("No criteria available.");
+        } else{
+            for (Criterion criteria : criterionMap.values()) {
+                criteria.printCriterion(criteria.getName(), criterionMap);
+            }
+        }
+    }
     /**
      * Prints information about all the tasks stored in the task map.
      * If no tasks are in map, a message indicating it will be displayed.
